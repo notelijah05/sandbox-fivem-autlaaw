@@ -253,6 +253,8 @@ function RegisterCallbacks()
 		)
 
 		if deletedCharacter then
+			MySQL.query.await("DELETE FROM `peds` WHERE `char` = ?", { data })
+
 			TriggerEvent("Characters:Server:CharacterDeleted", data)
 			cb(true)
 

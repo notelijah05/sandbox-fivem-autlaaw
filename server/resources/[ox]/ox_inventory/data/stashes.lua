@@ -1407,7 +1407,7 @@ return {
         groups = "avast_arcade",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(494.29, -1530.54, 29.29),
@@ -1426,7 +1426,7 @@ return {
         groups = "aztecas",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-1377.012, -634.215, 30.320),
@@ -1445,7 +1445,7 @@ return {
         groups = "bahama",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-1259.49, -281.17, 37.38),
@@ -1464,7 +1464,7 @@ return {
         groups = "bakery",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-1.96, -1827.12, 29.15),
@@ -1483,7 +1483,7 @@ return {
         groups = "ballers",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(123.59, -1039.2, 29.28),
@@ -1502,7 +1502,7 @@ return {
         groups = "beanmachine",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(757.43, -766.4, 26.34),
@@ -1521,7 +1521,7 @@ return {
         groups = "bowling",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-1192.9, -898.69, 13.8),
@@ -1540,7 +1540,7 @@ return {
         groups = "burgershot",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(1008.64, 72.07, 75.06),
@@ -1559,7 +1559,7 @@ return {
         groups = "casino",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(991.05, 24.74, 71.46),
@@ -1578,7 +1578,7 @@ return {
         groups = "casino",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(971.52, 68.73, 116.16),
@@ -1597,7 +1597,7 @@ return {
         groups = "casino",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(984.24, 74.78, -76.01),
@@ -1616,7 +1616,7 @@ return {
         groups = "casino",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-383.95, 265.61, 86.46),
@@ -1635,7 +1635,7 @@ return {
         groups = "lasttrain",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-289.955, -1936.476, 41.045),
@@ -1654,7 +1654,7 @@ return {
         groups = "mba",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-289.337, -1935.401, 30.146),
@@ -1673,7 +1673,7 @@ return {
         groups = "mba",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-1183.76, -1155.12, 7.67),
@@ -1692,7 +1692,7 @@ return {
         groups = "noodle",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(802.49, -758.53, 26.78),
@@ -1711,7 +1711,7 @@ return {
         groups = "pizza_this",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(813.35, -749.39, 26.78),
@@ -1730,7 +1730,7 @@ return {
         groups = "pizza_this",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(809.33, -761.47, 22.3),
@@ -1749,7 +1749,7 @@ return {
         groups = "pizza_this",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-1124.56, -1458.42, 5.11),
@@ -1768,7 +1768,7 @@ return {
         groups = "prego",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-1119.02, -1452.57, 5.11),
@@ -1787,7 +1787,7 @@ return {
         groups = "prego",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-1120.07, -1456.97, 2.03),
@@ -1806,7 +1806,7 @@ return {
         groups = "prego",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-984.61, -263.24, 38.47),
@@ -1825,7 +1825,7 @@ return {
         groups = "rockford_records",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(158.21, 247.93, 107.05),
@@ -1844,7 +1844,7 @@ return {
         groups = "rustybrowns",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-568.57, 291.2, 79.18),
@@ -1863,7 +1863,7 @@ return {
         groups = "tequila",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-810.51, -733.09, 23.78),
@@ -1882,7 +1882,7 @@ return {
         groups = "triad",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(132.78, -1287.97, 29.27),
@@ -1901,7 +1901,7 @@ return {
         groups = "unicorn",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-589.43, -1066.88, 22.34),
@@ -1920,7 +1920,7 @@ return {
         groups = "uwu",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(337.75, -1988.88, 24.21),
@@ -1939,7 +1939,7 @@ return {
         groups = "vagos",
         permissionKey = "JOB_STORAGE",
     },
-    
+
     {
         target = {
             loc = vec3(-305.63, 6271.79, 31.53),
@@ -2446,28 +2446,11 @@ return {
             label = 'Open Storage'
         },
         name = 'redline-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
-        permissionKey = 'JOB_STORAGE',
-    },
-
-    {
-        target = {
-            loc = vec3(133.37, -3051.24, 7.04),
-            length = 2.0,
-            width = 2.0,
-            heading = 0.0,
-            minZ = 6.04,
-            maxZ = 8.24,
-            label = 'Open Storage'
-        },
-        name = 'tuner-parts-storage-1',
-        label = 'sv_config',
-        owner = false,
-        slots = 100,
-        weight = 100000,
+        groups = "redline",
         permissionKey = 'JOB_STORAGE',
     },
 
@@ -2482,7 +2465,7 @@ return {
             label = 'Open Storage'
         },
         name = 'nutz-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2500,7 +2483,7 @@ return {
             label = 'Open Storage'
         },
         name = 'hayes-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2518,7 +2501,7 @@ return {
             label = 'Open Storage'
         },
         name = 'atomic-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2536,7 +2519,7 @@ return {
             label = 'Open Storage'
         },
         name = 'harmony-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2553,8 +2536,8 @@ return {
             maxZ = 39.55,
             label = 'Open Storage'
         },
-        name = 'sv_config-storage',
-        label = 'sv_config',
+        name = 'Open Storage-storage',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2572,7 +2555,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2590,7 +2573,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2608,7 +2591,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2626,7 +2609,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2644,7 +2627,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2662,7 +2645,7 @@ return {
             label = 'Open Storage'
         },
         name = 'redline-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2680,7 +2663,7 @@ return {
             label = 'Open Storage'
         },
         name = 'redline-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2698,7 +2681,7 @@ return {
             label = 'Open Storage'
         },
         name = 'redline-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2716,7 +2699,7 @@ return {
             label = 'Open Storage'
         },
         name = 'redline-parts-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2734,97 +2717,7 @@ return {
             label = 'Open Storage'
         },
         name = 'redline-parts-storage-5',
-        label = 'sv_config',
-        owner = false,
-        slots = 100,
-        weight = 100000,
-        permissionKey = 'JOB_STORAGE',
-    },
-
-    {
-        target = {
-            loc = vec3(133.37, -3051.24, 7.04),
-            length = 1.0,
-            width = 1.0,
-            heading = 0.0,
-            minZ = 6.04,
-            maxZ = 8.24,
-            label = 'Open Storage'
-        },
-        name = 'sv_config-storage',
-        label = 'sv_config',
-        owner = false,
-        slots = 100,
-        weight = 100000,
-        permissionKey = 'JOB_STORAGE',
-    },
-
-    {
-        target = {
-            loc = vec3(128.58, -3011.16, 7.04),
-            length = 2.0,
-            width = 2.0,
-            heading = 0.0,
-            minZ = 6.04,
-            maxZ = 9.04,
-            label = 'Open Storage'
-        },
-        name = 'tuner-parts-storage-1',
-        label = 'sv_config',
-        owner = false,
-        slots = 100,
-        weight = 100000,
-        permissionKey = 'JOB_STORAGE',
-    },
-
-    {
-        target = {
-            loc = vec3(128.58, -3011.16, 7.04),
-            length = 6.8,
-            width = 8.2,
-            heading = 0.0,
-            minZ = 6.04,
-            maxZ = 9.04,
-            label = 'Open Storage'
-        },
-        name = 'tuner-parts-storage-1',
-        label = 'sv_config',
-        owner = false,
-        slots = 100,
-        weight = 100000,
-        permissionKey = 'JOB_STORAGE',
-    },
-
-    {
-        target = {
-            loc = vec3(121.19, -3028.03, 7.04),
-            length = 4.0,
-            width = 3.0,
-            heading = 270.0,
-            minZ = 6.04,
-            maxZ = 10.84,
-            label = 'Open Storage'
-        },
-        name = 'tuner-parts-storage-2',
-        label = 'sv_config',
-        owner = false,
-        slots = 100,
-        weight = 100000,
-        permissionKey = 'JOB_STORAGE',
-    },
-
-    {
-        target = {
-            loc = vec3(129.55, -3031.51, 7.04),
-            length = 2.0,
-            width = 2.0,
-            heading = 345.0,
-            minZ = 6.04,
-            maxZ = 8.24,
-            label = 'Open Storage'
-        },
-        name = 'tuner-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2841,8 +2734,8 @@ return {
             maxZ = 31.07,
             label = 'Open Storage'
         },
-        name = 'sv_config-storage',
-        label = 'sv_config',
+        name = 'Open Storage-storage',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2860,7 +2753,7 @@ return {
             label = 'Open Storage'
         },
         name = 'nutz-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2878,7 +2771,7 @@ return {
             label = 'Open Storage'
         },
         name = 'nutz-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2896,7 +2789,7 @@ return {
             label = 'Open Storage'
         },
         name = 'nutz-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2913,8 +2806,8 @@ return {
             maxZ = 37.31,
             label = 'Open Storage'
         },
-        name = 'sv_config-storage',
-        label = 'sv_config',
+        name = 'Open Storage-storage',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2932,7 +2825,7 @@ return {
             label = 'Open Storage'
         },
         name = 'hayes-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2950,7 +2843,7 @@ return {
             label = 'Open Storage'
         },
         name = 'hayes-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2968,7 +2861,7 @@ return {
             label = 'Open Storage'
         },
         name = 'hayes-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -2985,8 +2878,8 @@ return {
             maxZ = 28.09,
             label = 'Open Storage'
         },
-        name = 'sv_config-storage',
-        label = 'sv_config',
+        name = 'Open Storage-storage',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3004,7 +2897,7 @@ return {
             label = 'Open Storage'
         },
         name = 'atomic-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3022,7 +2915,7 @@ return {
             label = 'Open Storage'
         },
         name = 'atomic-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3040,7 +2933,7 @@ return {
             label = 'Open Storage'
         },
         name = 'atomic-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3057,8 +2950,8 @@ return {
             maxZ = 39.55,
             label = 'Open Storage'
         },
-        name = 'sv_config-storage',
-        label = 'sv_config',
+        name = 'Open Storage-storage',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3076,7 +2969,7 @@ return {
             label = 'Open Storage'
         },
         name = 'harmony-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3094,7 +2987,7 @@ return {
             label = 'Open Storage'
         },
         name = 'harmony-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3112,7 +3005,7 @@ return {
             label = 'Open Storage'
         },
         name = 'harmony-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3129,8 +3022,8 @@ return {
             maxZ = 39.55,
             label = 'Open Storage'
         },
-        name = 'sv_config-storage',
-        label = 'sv_config',
+        name = 'Open Storage-storage',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3148,7 +3041,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3166,7 +3059,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3184,7 +3077,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3202,7 +3095,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3220,7 +3113,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-mini-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3238,7 +3131,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-mini-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3256,7 +3149,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-mini-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3274,7 +3167,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-mini-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3292,7 +3185,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-mini-5',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3310,7 +3203,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3328,7 +3221,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3346,7 +3239,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3364,7 +3257,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3382,7 +3275,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-5',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3400,7 +3293,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-6',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3417,8 +3310,8 @@ return {
             maxZ = 32.3,
             label = 'Open Storage'
         },
-        name = 'sv_config-storage',
-        label = 'sv_config',
+        name = 'Open Storage-storage',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3436,7 +3329,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3454,7 +3347,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3472,7 +3365,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3490,7 +3383,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3508,7 +3401,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3526,7 +3419,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-5',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3544,7 +3437,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-6',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3561,8 +3454,8 @@ return {
             maxZ = 32.67,
             label = 'Open Storage'
         },
-        name = 'sv_config-storage',
-        label = 'sv_config',
+        name = 'Open Storage-storage',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3580,7 +3473,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3598,7 +3491,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3616,7 +3509,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3634,7 +3527,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3652,7 +3545,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3670,7 +3563,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-5',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3688,7 +3581,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-6',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3705,8 +3598,8 @@ return {
             maxZ = 6.66,
             label = 'Open Storage'
         },
-        name = 'sv_config-storage',
-        label = 'sv_config',
+        name = 'Open Storage-storage',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3724,7 +3617,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3742,7 +3635,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3760,7 +3653,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3778,7 +3671,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3796,7 +3689,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3814,7 +3707,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-5',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3832,7 +3725,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-6',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3850,7 +3743,7 @@ return {
             label = 'Open Storage'
         },
         name = 'redline-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3868,7 +3761,7 @@ return {
             label = 'Open Storage'
         },
         name = 'redline-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3886,7 +3779,7 @@ return {
             label = 'Open Storage'
         },
         name = 'redline-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3904,7 +3797,7 @@ return {
             label = 'Open Storage'
         },
         name = 'redline-parts-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3922,7 +3815,7 @@ return {
             label = 'Open Storage'
         },
         name = 'redline-parts-storage-5',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3940,7 +3833,7 @@ return {
             label = 'Open Storage'
         },
         name = 'tuner-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3958,7 +3851,7 @@ return {
             label = 'Open Storage'
         },
         name = 'tuner-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3976,7 +3869,25 @@ return {
             label = 'Open Storage'
         },
         name = 'tuner-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
+        owner = false,
+        slots = 100,
+        weight = 100000,
+        permissionKey = 'JOB_STORAGE',
+    },
+
+    {
+        target = {
+            loc = vec3(133.37, -3051.24, 7.04),
+            length = 2.0,
+            width = 2.0,
+            heading = 0.0,
+            minZ = 6.04,
+            maxZ = 8.24,
+            label = 'Open Storage'
+        },
+        name = 'tuner-parts-storage-4',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -3994,7 +3905,7 @@ return {
             label = 'Open Storage'
         },
         name = 'nutz-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4012,7 +3923,7 @@ return {
             label = 'Open Storage'
         },
         name = 'nutz-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4030,7 +3941,7 @@ return {
             label = 'Open Storage'
         },
         name = 'hayes-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4048,7 +3959,7 @@ return {
             label = 'Open Storage'
         },
         name = 'hayes-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4066,7 +3977,7 @@ return {
             label = 'Open Storage'
         },
         name = 'atomic-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4084,7 +3995,7 @@ return {
             label = 'Open Storage'
         },
         name = 'atomic-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4102,7 +4013,7 @@ return {
             label = 'Open Storage'
         },
         name = 'harmony-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4120,7 +4031,7 @@ return {
             label = 'Open Storage'
         },
         name = 'harmony-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4138,7 +4049,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4156,7 +4067,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4174,7 +4085,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4192,7 +4103,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4210,7 +4121,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-mini-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4228,7 +4139,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-mini-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4246,7 +4157,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-mini-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4264,7 +4175,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-mini-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4282,7 +4193,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ae-mini-5',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4300,7 +4211,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4318,7 +4229,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4336,7 +4247,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4354,7 +4265,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4372,7 +4283,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-5',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4390,7 +4301,7 @@ return {
             label = 'Open Storage'
         },
         name = 'ottos-parts-storage-6',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4408,7 +4319,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4426,7 +4337,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4444,7 +4355,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4462,7 +4373,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4480,7 +4391,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-5',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4498,7 +4409,7 @@ return {
             label = 'Open Storage'
         },
         name = 'bennys-parts-storage-6',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4516,7 +4427,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4534,7 +4445,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4552,7 +4463,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4570,7 +4481,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4588,7 +4499,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-5',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4606,7 +4517,7 @@ return {
             label = 'Open Storage'
         },
         name = 'paleto_tuners-parts-storage-6',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4624,7 +4535,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-1',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4642,7 +4553,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-2',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4660,7 +4571,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-3',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4678,7 +4589,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-4',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4696,7 +4607,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-5',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
@@ -4714,7 +4625,7 @@ return {
             label = 'Open Storage'
         },
         name = 'dreamworks-parts-storage-6',
-        label = 'sv_config',
+        label = 'Open Storage',
         owner = false,
         slots = 100,
         weight = 100000,
