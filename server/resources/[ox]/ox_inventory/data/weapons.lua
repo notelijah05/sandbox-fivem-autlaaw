@@ -798,7 +798,8 @@ return {
             weight = 1130,
             durability = 0.1,
             rarity = 3,
-            ammoname = 'ammo-9'
+            ammoname = 'ammo-9',
+            model = 'WEAPON_FIVESEVEN'
         },
 
         ['WEAPON_FM1_P226_PD'] = {
@@ -806,7 +807,8 @@ return {
             weight = 1130,
             durability = 0.1,
             rarity = 3,
-            ammoname = 'ammo-9'
+            ammoname = 'ammo-9',
+            model = 'WEAPON_FM1_P226'
         },
 
         ['WEAPON_2011_PD'] = {
@@ -814,7 +816,8 @@ return {
             weight = 1130,
             durability = 0.1,
             rarity = 3,
-            ammoname = 'ammo-9'
+            ammoname = 'ammo-9',
+            model = 'WEAPON_2011'
         },
 
         ['WEAPON_38SNUBNOSE'] = {
@@ -830,7 +833,8 @@ return {
             weight = 1130,
             durability = 0.1,
             rarity = 4,
-            ammoname = 'ammo-9'
+            ammoname = 'ammo-9',
+            model = 'WEAPON_44MAGNUM'
         },
 
         ['WEAPON_HKUMP_PD'] = {
@@ -838,7 +842,8 @@ return {
             weight = 1130,
             durability = 0.1,
             rarity = 3,
-            ammoname = 'ammo-9'
+            ammoname = 'ammo-9',
+            model = 'WEAPON_HKUMP'
         },
 
         ['WEAPON_BENELLIM2_PD'] = {
@@ -846,7 +851,8 @@ return {
             weight = 1130,
             durability = 0.1,
             rarity = 4,
-            ammoname = 'ammo-shotgun'
+            ammoname = 'ammo-shotgun',
+            model = 'WEAPON_BENELLIM2'
         },
 
         ['WEAPON_BULLPUPSHOTGUN_PD'] = {
@@ -854,7 +860,8 @@ return {
             weight = 1130,
             durability = 0.1,
             rarity = 7,
-            ammoname = 'ammo-shotgun'
+            ammoname = 'ammo-shotgun',
+            model = 'WEAPON_BULLPUPSHOTGUN'
         },
 
         ['WEAPON_FNX45'] = {
