@@ -1,9 +1,9 @@
 _catalog = {
 	camera = {
-		coords = vector3(-1380.064, -474.744, 60.537),
-		rotation = vector3(-12.044, 0.000, 317.127),
+		coords = vector3(-1225.384, -3179.823, -38.441),
+		rotation = vector3(-12.834, 0.000, 155.539),
 	},
-	vehicle = vector4(-1375.559, -471.758, 59.308, 97.743),
+	vehicle = vector4(-1227.742, -3185.101, -39.460, 290.242),
 }
 
 _catalogCategories = {
