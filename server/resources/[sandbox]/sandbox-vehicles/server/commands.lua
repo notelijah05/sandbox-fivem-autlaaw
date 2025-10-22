@@ -288,7 +288,7 @@ function RegisterChatCommands()
 				end
 			end
 
-			exports['sandbox-hud']:Notification(source, "error", "Error")
+			exports['sandbox-hud']:Notification(source, "error", "Unable to Force Audio")
 		end)
 	end, {
 		help = "Force Overrides a Vehicle Engine Audio & Saves It",

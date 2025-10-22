@@ -246,7 +246,7 @@ function StartOpeningVehicleCustoms()
 				exports["sandbox-hud"]:Notification("error", "Cannot Modify a Vehicle That You Don't Have Keys For")
 			end
 		else
-			exports["sandbox-hud"]:Notification("error", "Error")
+			exports["sandbox-hud"]:Notification("error", "Unable to Open Vehicle Customs")
 		end
 	end
 end

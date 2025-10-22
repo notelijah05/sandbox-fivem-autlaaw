@@ -114,7 +114,7 @@ end)
 AddEventHandler("Vehicles:Client:DonatorLicensePlateClaimConfirm", function(data)
     exports["sandbox-base"]:ServerCallback("Vehicles:ClaimDonatorPersonalPlates", data, function(success)
         if not success then
-            exports["sandbox-hud"]:Notification("error", "Error")
+            exports["sandbox-hud"]:Notification("error", "Unable to Claim Plates")
         end
     end)
 end)

@@ -41,7 +41,7 @@ AddEventHandler("Billboards:Client:SetLink", function(data)
             if invalidUrl then
                 exports["sandbox-hud"]:Notification("error", "Invalid URL - Imgur Links Only", 5000)
             else
-                exports["sandbox-hud"]:Notification("error", "Error", 5000)
+                exports["sandbox-hud"]:Notification("error", "Unable to Update Link", 5000)
             end
         end
     end)

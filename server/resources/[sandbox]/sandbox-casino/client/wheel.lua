@@ -53,7 +53,7 @@ AddEventHandler("Casino:Client:UnlockWheel", function()
         if success then
             exports["sandbox-hud"]:Notification("success", "Wheel Unlocked")
         else
-            exports["sandbox-hud"]:Notification("error", "Error")
+            exports["sandbox-hud"]:Notification("error", "Wheel Already Unlocked")
         end
     end)
 end)

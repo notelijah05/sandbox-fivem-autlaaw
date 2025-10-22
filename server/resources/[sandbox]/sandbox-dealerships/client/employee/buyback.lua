@@ -47,7 +47,7 @@ AddEventHandler("Dealerships:Client:StartBuyback", function(entity, data)
             if data then
                 exports["sandbox-hud"]:Notification("error", data)
             else
-                exports["sandbox-hud"]:Notification("error", "Error")
+                exports["sandbox-hud"]:Notification("error", "Unable to Start Vehicle Buy Back")
             end
         end
     end)

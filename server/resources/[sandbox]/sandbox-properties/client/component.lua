@@ -739,7 +739,7 @@ exports('Delete', function(id)
 			p:resolve(furniture)
 		else
 			p:resolve(false)
-			exports["sandbox-hud"]:Notification("error", "Error")
+			exports["sandbox-hud"]:Notification("error", "Unable to Delete Furniture")
 		end
 	end)
 

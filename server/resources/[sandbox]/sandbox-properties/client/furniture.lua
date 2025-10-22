@@ -300,7 +300,7 @@ AddEventHandler("Furniture:Client:Place", function(data, placement)
             if success then
                 exports["sandbox-hud"]:Notification("success", "Placed Item")
             else
-                exports["sandbox-hud"]:Notification("error", "Error")
+                exports["sandbox-hud"]:Notification("error", "Unable to Place Furniture")
             end
 
             _placingFurniture = false
@@ -348,7 +348,7 @@ AddEventHandler("Furniture:Client:Move", function(data, placement)
             if success then
                 exports["sandbox-hud"]:Notification("success", "Moved Item")
             else
-                exports["sandbox-hud"]:Notification("error", "Error")
+                exports["sandbox-hud"]:Notification("error", "Unable to Move Furniture")
             end
 
             _placingFurniture = false

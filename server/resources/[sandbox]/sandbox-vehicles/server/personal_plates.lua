@@ -41,7 +41,7 @@ function PrivatePlateStuff(char, source, itemData)
         if veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
             if not vehState.VIN then
-                exports['sandbox-hud']:Notification(source, "error", "Error")
+                exports['sandbox-hud']:Notification(source, "error", "Unable to Set Personal Plate")
                 return
             end
 
@@ -94,7 +94,7 @@ function PrivatePlateStuff(char, source, itemData)
             exports['sandbox-base']:LoggerInfo('Vehicles',
                 string.format("Personal Plate Change For Vehicle: %s. %s -> %s", vehState.VIN, originalPlate, newPlate))
         else
-            exports['sandbox-hud']:Notification(source, "error", "Error")
+            exports['sandbox-hud']:Notification(source, "error", "Unable to Set Personal Plate")
         end
     end)
 end
@@ -225,7 +225,7 @@ function RegisterItems()
     exports.ox_inventory:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or (Player(source).state.onDuty ~= "government" and Player(source).state.onDuty ~= "dgang") then
-            exports['sandbox-hud']:Notification(source, "error", "Error")
+            exports['sandbox-hud']:Notification(source, "error", "Unable to Set Personal Plate")
             return
         end
 
@@ -235,7 +235,7 @@ function RegisterItems()
     exports.ox_inventory:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char then
-            exports['sandbox-hud']:Notification(source, "error", "Error")
+            exports['sandbox-hud']:Notification(source, "error", "Unable to Set Personal Plate")
             return
         end
 

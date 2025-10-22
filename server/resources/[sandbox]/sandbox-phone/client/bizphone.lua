@@ -175,7 +175,7 @@ AddEventHandler("Phone:Client:MuteBiz", function(entityData, data)
                 exports["sandbox-hud"]:Notification("success", "Unmuted Phone")
             end
         else
-            exports["sandbox-hud"]:Notification("error", "Error")
+            exports["sandbox-hud"]:Notification("error", "Unable to Mute Phone")
         end
     end)
 end)
