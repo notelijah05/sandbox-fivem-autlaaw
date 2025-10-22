@@ -70,16 +70,16 @@ function LombankDisablePower(source)
 		}, false, 50.0)
 	GlobalState["Fleeca:Disable:lombank_legion"] = true
 
-	exports['sandbox-doors']:SetLock("lombank_hidden_entrance", false)
-	exports['sandbox-doors']:SetLock("lombank_front_gate", false)
-	exports['sandbox-doors']:SetLock("lombank_upper_gate", false)
-	exports['sandbox-doors']:SetLock("lombank_lower_gate", false)
-	exports['sandbox-doors']:SetLock("lombank_lasers", false)
+	exports['ox_doorlock']:SetLock("lombank_hidden_entrance", false)
+	exports['ox_doorlock']:SetLock("lombank_front_gate", false)
+	exports['ox_doorlock']:SetLock("lombank_upper_gate", false)
+	exports['ox_doorlock']:SetLock("lombank_lower_gate", false)
+	exports['ox_doorlock']:SetLock("lombank_lasers", false)
 end
 
 function AreRequirementsUnlocked(reqs)
 	for k, v in ipairs(reqs or {}) do
-		if exports['sandbox-doors']:IsLocked(v) then
+		if exports['ox_doorlock']:IsLocked(v) then
 			return false
 		end
 	end
@@ -95,14 +95,14 @@ function ResetLombank()
 		GlobalState[string.format("Lombank:Upper:Wall:%s", v.wallId)] = nil
 	end
 
-	exports['sandbox-doors']:SetLock("lombank_lasers", true)
+	exports['ox_doorlock']:SetLock("lombank_lasers", true)
 	exports['sandbox-cctv']:StateGroupOnline("lombank")
 	for k, v in pairs(lbThermPoints) do
-		exports['sandbox-doors']:SetLock(v.door, true)
+		exports['ox_doorlock']:SetLock(v.door, true)
 	end
 
 	for k, v in pairs(_lbHackPoints) do
-		exports['sandbox-doors']:SetLock(v.door, true)
+		exports['ox_doorlock']:SetLock(v.door, true)
 	end
 
 	if #_lootedTrollys > 0 then
@@ -136,14 +136,14 @@ function SecureLombank()
 		GlobalState[string.format("Lombank:Upper:Wall:%s", v.wallId)] = nil
 	end
 
-	exports['sandbox-doors']:SetLock("lombank_lasers", true)
+	exports['ox_doorlock']:SetLock("lombank_lasers", true)
 	exports['sandbox-cctv']:StateGroupOnline("lombank")
 	for k, v in pairs(lbThermPoints) do
-		exports['sandbox-doors']:SetLock(v.door, true)
+		exports['ox_doorlock']:SetLock(v.door, true)
 	end
 
 	for k, v in pairs(_lbHackPoints) do
-		exports['sandbox-doors']:SetLock(v.door, true)
+		exports['ox_doorlock']:SetLock(v.door, true)
 	end
 
 	if #_lootedTrollys > 0 then
@@ -204,7 +204,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				)]
 				== nil
 				and not _lbInUse.carts[string.format("%s-%s", math.ceil(data.coords.x), math.ceil(data.coords.y))]
-				and not exports['sandbox-doors']:IsLocked(lbThermPoints[string.format("lowerVaultRoom%s", pState.lombankRoom)].door)
+				and not exports['ox_doorlock']:IsLocked(lbThermPoints[string.format("lowerVaultRoom%s", pState.lombankRoom)].door)
 			then
 				GlobalState["LombankInProgress"] = true
 				exports['sandbox-base']:LoggerInfo(
@@ -248,7 +248,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				)]
 				== nil
 				and _lbInUse.carts[string.format("%s-%s", math.ceil(data.coords.x), math.ceil(data.coords.y))] == source
-				and not exports['sandbox-doors']:IsLocked(lbThermPoints[string.format("lowerVaultRoom%s", pState.lombankRoom)].door)
+				and not exports['ox_doorlock']:IsLocked(lbThermPoints[string.format("lowerVaultRoom%s", pState.lombankRoom)].door)
 			then
 				exports.ox_inventory:LootCustomWeightedSetWithCount(_lbLoot, char:GetData("SID"), 1)
 
@@ -399,7 +399,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									GlobalState[string.format("Lombank:Power:%s", data.boxId)] = _lbGlobalReset
 									TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 									if IsLBPowerDisabled() then
-										exports['sandbox-doors']:SetLock("lombank_hidden_entrance", false)
+										exports['ox_doorlock']:SetLock("lombank_hidden_entrance", false)
 										exports['sandbox-cctv']:StateGroupOffline("lombank")
 										exports["sandbox-sounds"]:PlayLocation(
 											source,
@@ -428,8 +428,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 										)
 										GlobalState["Fleeca:Disable:lombank_legion"] = true
 									else
-										exports['sandbox-doors']:SetLock("lombank_hidden_entrance", true)
-										exports['sandbox-doors']:SetLock("lombank_lasers", true)
+										exports['ox_doorlock']:SetLock("lombank_hidden_entrance", true)
+										exports['ox_doorlock']:SetLock("lombank_lasers", true)
 										exports["sandbox-sounds"]:PlayLocation(source, data.ptFxPoint, 15.0,
 											"power_small_off.ogg", 0.25)
 										if not _lbPowerAlerted or os.time() > _lbPowerAlerted then
@@ -587,7 +587,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										GlobalState[string.format("Lombank:Power:%s", data.boxId)] = _lbGlobalReset
 										TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 										if IsLBPowerDisabled() then
-											exports['sandbox-doors']:SetLock("lombank_hidden_entrance", false)
+											exports['ox_doorlock']:SetLock("lombank_hidden_entrance", false)
 											exports['sandbox-cctv']:StateGroupOffline("lombank")
 											exports["sandbox-sounds"]:PlayLocation(
 												source,
@@ -616,8 +616,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 											)
 											GlobalState["Fleeca:Disable:lombank_legion"] = true
 										else
-											exports['sandbox-doors']:SetLock("lombank_hidden_entrance", true)
-											exports['sandbox-doors']:SetLock("lombank_lasers", true)
+											exports['ox_doorlock']:SetLock("lombank_hidden_entrance", true)
+											exports['ox_doorlock']:SetLock("lombank_lasers", true)
 											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,

@@ -50,7 +50,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 									~= nil
 									and GlobalState[string.format("Fleeca:%s:VaultDoor", bankData.id)].state == 3
 								)
-								or (not exports['sandbox-doors']:IsLocked(string.format("%s_gate", LocalPlayer.state.fleeca)))
+								or (not exports['ox_doorlock']:IsLocked(string.format("%s_gate", LocalPlayer.state.fleeca)))
 							)
 						end,
 					},
@@ -211,7 +211,7 @@ function SetupFleecaVaults(bankData)
 								LocalPlayer.state.fleeca,
 								v.options.name
 							)])
-							and (k <= 2 or not exports['sandbox-doors']:IsLocked(string.format("%s_gate", LocalPlayer.state.fleeca)))
+							and (k <= 2 or not exports['ox_doorlock']:IsLocked(string.format("%s_gate", LocalPlayer.state.fleeca)))
 					end,
 				},
 			}

@@ -34,7 +34,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	StartPaletoThreads()
 
 	for k, v in ipairs(_pbDoorIds) do
-		exports['sandbox-doors']:SetLock(v, true)
+		exports['ox_doorlock']:SetLock(v, true)
 	end
 
 	exports["sandbox-base"]:RegisterServerCallback("Robbery:Paleto:SecureBank", function(source, data, cb)
@@ -101,8 +101,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 			table.insert(its, {
 				label = v.label,
 				data = v.data,
-				disabled = not exports['sandbox-doors']:IsLocked(v.doorId),
-				event = exports['sandbox-doors']:IsLocked(v.doorId) and "Robbery:Client:Paleto:Door" or nil,
+				disabled = not exports['ox_doorlock']:IsLocked(v.doorId),
+				event = exports['ox_doorlock']:IsLocked(v.doorId) and "Robbery:Client:Paleto:Door" or nil,
 			})
 		end
 		cb(its)
@@ -174,14 +174,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 								)
 							)
 						then
-							exports['sandbox-doors']:SetLock(data.data.door, false)
+							exports['ox_doorlock']:SetLock(data.data.door, false)
 							exports['sandbox-hud']:Notification(source, "success", "Door Unlocked")
 
 							if _pbDoorsGarbage[data.data.id].requireCode then
 								exports.ox_inventory:RemoveAll(char:GetData("SID"), 1, "paleto_access_codes")
 							end
 						else
-							exports['sandbox-doors']:SetLock(data.data.door, true)
+							exports['ox_doorlock']:SetLock(data.data.door, true)
 							exports['sandbox-hud']:Notification(source, "error", "Invalid Access Code")
 							exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 						end
@@ -304,7 +304,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												250.0
 											)
 											GlobalState["Fleeca:Disable:savings_paleto"] = true
-											exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", false)
+											exports['ox_doorlock']:SetLock("bank_savings_paleto_gate", false)
 											RestorePowerThread()
 										else
 											exports["sandbox-sounds"]:PlayLocation(
@@ -314,7 +314,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												"power_small_complete_off.ogg",
 												0.1
 											)
-											exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", true)
+											exports['ox_doorlock']:SetLock("bank_savings_paleto_gate", true)
 										end
 										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 									else
@@ -763,7 +763,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							6000
 						)
 						return
-					elseif exports['sandbox-doors']:IsLocked("bank_savings_paleto_vault") then
+					elseif exports['ox_doorlock']:IsLocked("bank_savings_paleto_vault") then
 						return
 					end
 					if not _pbInUse.drillPoints[data] then
@@ -869,7 +869,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							6000
 						)
 						return
-					elseif exports['sandbox-doors']:IsLocked(data.door) then
+					elseif exports['ox_doorlock']:IsLocked(data.door) then
 						return
 					end
 					if not _pbInUse.searchPoints[data.searchId] then
