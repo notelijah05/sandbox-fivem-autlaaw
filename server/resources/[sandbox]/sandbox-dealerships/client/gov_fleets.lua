@@ -5,24 +5,24 @@ function CreateGovermentFleetShops()
                 v.interactionPed.coords,
                 v.interactionPed.heading, v.interactionPed.range, {
                     {
-                        icon = 'cars',
+                        icon = 'fa-solid fa-warehouse',
                         text = 'Purchase Fleet Vehicles',
-                        event = 'FleetDealers:Client:Open',
-                        data = { shop = k },
                         groups = { v.job },
                         permissionKey = v.requiredPermission,
                         reqDuty = true,
                         workplace = v.workplace,
+                        onSelect = function()
+                            TriggerEvent('FleetDealers:Client:Open', { shop = k })
+                        end,
                     },
                 }, 'cars', v.interactionPed.scenario)
         end
     end
 end
 
-AddEventHandler('FleetDealers:Client:Open', function(entityData, data)
+AddEventHandler('FleetDealers:Client:Open', function(data)
     if data and data.shop and _fleetConfig[data.shop] then
         local shopData = _fleetConfig[data.shop]
-
         local menuData = {
             main = {
                 label = string.format('Purchase a New %s Fleet Vehicle', shopData.jobName),
