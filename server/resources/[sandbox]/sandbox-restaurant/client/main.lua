@@ -704,13 +704,13 @@ AddEventHandler("Restaurant:Client:Pickup", function(entity, data)
 	exports.ox_inventory:openInventory(data.inventory)
 end)
 
-AddEventHandler("Restaurant:Client:ClockIn", function(_, data)
+AddEventHandler("Restaurant:Client:ClockIn", function(data)
 	if data and data.job then
 		exports['sandbox-jobs']:DutyOn(data.job)
 	end
 end)
 
-AddEventHandler("Restaurant:Client:ClockOut", function(_, data)
+AddEventHandler("Restaurant:Client:ClockOut", function(data)
 	if data and data.job then
 		exports['sandbox-jobs']:DutyOff(data.job)
 	end
