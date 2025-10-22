@@ -2148,7 +2148,7 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
   `RegisteredPlate` varchar(20) NOT NULL,
   `RegistrationDate` int(11) DEFAULT 0,
   `OwnerType` int(11) NOT NULL DEFAULT 0,
-  `OwnerId` int(11) NOT NULL,
+  `OwnerId` varchar(255) NOT NULL,
   `OwnerWorkplace` int(11) DEFAULT NULL,
   `StorageType` int(11) DEFAULT NULL,
   `StorageId` varchar(50) DEFAULT NULL,
