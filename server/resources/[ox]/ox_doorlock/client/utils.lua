@@ -60,16 +60,16 @@ local function pickLock(entity)
 	end
 
 	if rand == 1 then
-	    TriggerServerEvent('ox_doorlock:breakLockpick')
+		TriggerServerEvent('ox_doorlock:breakLockpick')
 
-	    if Config.NotifyType == 'ox' then
-	        lib.notify({
-	            type = 'error',
-	            description = locale('lockpick_broke')
-	        })
-	    elseif Config.NotifyType == 'sandbox' then
-	        exports['sandbox-hud']:Notification("error", locale('lockpick_broke'), 3500)
-	    end
+		if Config.NotifyType == 'ox' then
+			lib.notify({
+				type = 'error',
+				description = locale('lockpick_broke')
+			})
+		elseif Config.NotifyType == 'sandbox' then
+			exports['sandbox-hud']:Notification("error", locale('lockpick_broke'), 3500)
+		end
 	end
 
 
@@ -109,15 +109,15 @@ end
 local isAddingDoorlock = false
 
 RegisterNUICallback('notify', function(data, cb)
-    cb(1)
+	cb(1)
 
-    if Config.NotifyType == 'ox' then
-        lib.notify({
-            title = data
-        })
-    elseif Config.NotifyType == 'sandbox' then
-        exports['sandbox-hud']:Notification("success", data, 3500)
-    end
+	if Config.NotifyType == 'ox' then
+		lib.notify({
+			title = data
+		})
+	elseif Config.NotifyType == 'sandbox' then
+		exports['sandbox-hud']:Notification("success", data, 3500)
+	end
 end)
 
 RegisterNUICallback('createDoor', function(data, cb)

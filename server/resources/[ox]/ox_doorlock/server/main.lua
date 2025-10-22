@@ -77,7 +77,7 @@ exports('getAllDoors', function()
 	local allDoors = {}
 
 	for _, door in pairs(doors) do
-		allDoors[#allDoors+1] = getDoor(door)
+		allDoors[#allDoors + 1] = getDoor(door)
 	end
 
 	return allDoors
@@ -95,24 +95,24 @@ exports('editDoor', function(id, data)
 	local door = doors[id]
 
 	if door then
-		   for k, v in pairs(data) do
-			   if k ~= 'id' then
-				   local current = door[k]
-				   local t1 = type(current)
-				   local t2 = type(v)
+		for k, v in pairs(data) do
+			if k ~= 'id' then
+				local current = door[k]
+				local t1 = type(current)
+				local t2 = type(v)
 
-				   if t1 ~= 'nil' and v ~= '' and t1 ~= t2 then
-					   error(("Expected '%s' for door.%s, received %s (%s)"):format(t1, k, t2, v))
-				   end
+				if t1 ~= 'nil' and v ~= '' and t1 ~= t2 then
+					error(("Expected '%s' for door.%s, received %s (%s)"):format(t1, k, t2, v))
+				end
 
-				   -- Always update workplace, permissions, and onduty, even if empty string
-				   if k == 'workplace' or k == 'permissions' or k == 'onduty' then
-					   door[k] = v
-				   elseif v ~= '' then
-					   door[k] = v
-				   end
-			   end
-		   end
+				-- Always update workplace, permissions, and onduty, even if empty string
+				if k == 'workplace' or k == 'permissions' or k == 'onduty' then
+					door[k] = v
+				elseif v ~= '' then
+					door[k] = v
+				end
+			end
+		end
 
 		MySQL.update('UPDATE ox_doorlock SET name = ?, data = ? WHERE id = ?', { door.name, encodeData(door), id })
 		TriggerClientEvent('ox_doorlock:editDoorlock', -1, id, door)
@@ -321,19 +321,19 @@ local function setDoorState(id, state, lockpick)
 		end
 
 		if source then
-		    if Config.NotifyType == 'ox' then
-		        lib.notify(source, {
-		            type = 'error',
-		            icon = 'lock',
-		            description = state == 0 and 'cannot_unlock' or 'cannot_lock'
-		        })
-		    elseif Config.NotifyType == 'sandbox' then
-		        exports['sandbox-hud']:Notification(
-		            source,
-		            "error",
-		            state == 0 and locale('cannot_unlock') or locale('cannot_lock')
-		        )
-		    end
+			if Config.NotifyType == 'ox' then
+				lib.notify(source, {
+					type = 'error',
+					icon = 'lock',
+					description = state == 0 and 'cannot_unlock' or 'cannot_lock'
+				})
+			elseif Config.NotifyType == 'sandbox' then
+				exports['sandbox-hud']:Notification(
+					source,
+					"error",
+					state == 0 and locale('cannot_unlock') or locale('cannot_lock')
+				)
+			end
 		end
 	end
 
@@ -433,28 +433,28 @@ RegisterNetEvent('ox_doorlock:teleportToDoor', function(id)
 	if not IsPlayerAceAllowed(source, 'command.doorlock') then
 		return
 	end
-	
+
 	local door = doors[id]
 	if not door or not door.coords then
 		return
 	end
-	
+
 	local ped = GetPlayerPed(source)
 	SetEntityCoords(ped, door.coords.x, door.coords.y, door.coords.z, false, false, false, false)
 end)
 
 if utils.isFrameworkActive('sandbox-base') then
 	exports["sandbox-chat"]:RegisterAdminCommand("doorlock", function(source, args, rawCommand)
-	    TriggerClientEvent("ox_doorlock:triggeredCommand", source, args.closest)
+		TriggerClientEvent("ox_doorlock:triggeredCommand", source, args.closest)
 	end, {
-	    help = locale("create_modify_lock"),
-	    params = {
-	        {
-	            name = "closest",
-	            help = locale("command_closest"),
-	            optional = true,
-	        },
-	    },
+		help = locale("create_modify_lock"),
+		params = {
+			{
+				name = "closest",
+				help = locale("command_closest"),
+				optional = true,
+			},
+		},
 	}, -1)
 else
 	lib.addCommand('doorlock', {

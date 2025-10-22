@@ -7,7 +7,7 @@ local utils = require 'server.utils'
 local function getFilesRecursively(basePath, pattern)
 	local allFiles = {}
 	local totalCount = 0
-	
+
 	-- Get files in the base directory
 	local files, fileCount = utils.getFilesInDirectory(basePath, pattern)
 	for i = 1, fileCount do
@@ -17,12 +17,12 @@ local function getFilesRecursively(basePath, pattern)
 			path = basePath
 		}
 	end
-	
+
 	-- Get subdirectories
 	local subdirs = {}
 	local system = os.getenv('OS')
 	local resourcePath = GetResourcePath(cache.resource):gsub('//', '/') .. '/'
-	
+
 	if system and system:match('Windows') then
 		-- Windows command to list directories only
 		local dir = io.popen('dir "' .. resourcePath .. basePath .. '/" /b /ad')
@@ -36,7 +36,8 @@ local function getFilesRecursively(basePath, pattern)
 		end
 	else
 		-- Unix/Linux command to list directories only
-		local dir = io.popen('find "' .. resourcePath .. basePath .. '/" -maxdepth 1 -type d ! -path "' .. resourcePath .. basePath .. '/"')
+		local dir = io.popen('find "' ..
+		resourcePath .. basePath .. '/" -maxdepth 1 -type d ! -path "' .. resourcePath .. basePath .. '/"')
 		if dir then
 			for line in dir:lines() do
 				local dirName = line:match('/([^/]+)$')
@@ -47,7 +48,7 @@ local function getFilesRecursively(basePath, pattern)
 			dir:close()
 		end
 	end
-	
+
 	-- Recursively scan subdirectories
 	for _, subdir in ipairs(subdirs) do
 		local subPath = basePath .. '/' .. subdir
@@ -60,7 +61,7 @@ local function getFilesRecursively(basePath, pattern)
 			}
 		end
 	end
-	
+
 	return allFiles, totalCount
 end
 
