@@ -144,7 +144,7 @@ RegisterNetEvent('ox_doorlock:setState', function(id, state, source, data)
 	        if state == 0 then
 	            exports['sandbox-hud']:Notification("success", locale('unlocked_door'), 3500)
 	        else
-	            exports['sandbox-hud']:Notification("success", locale('locked_door'), 3500)
+	            exports['sandbox-hud']:Notification("error", locale('locked_door'), 3500)
 	        end
 	    end
 	end
