@@ -14,7 +14,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 				if duty and _mechanicJobs[duty] then
 					local installingPartData = _mechanicItemsToParts[part]
 					local playerCoords = GetEntityCoords(PlayerPedId())
-					local maxDistance = 2.0
+					local maxDistance = 5.0
 					local includePlayerVehicle = false
 
 					local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
@@ -127,7 +127,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 				local duty = LocalPlayer.state.onDuty
 				if duty and _mechanicJobs[duty] then
 					local playerCoords = GetEntityCoords(PlayerPedId())
-					local maxDistance = 2.0
+					local maxDistance = 5.0
 					local includePlayerVehicle = false
 
 					local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
@@ -240,7 +240,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 				local duty = LocalPlayer.state.onDuty
 				if duty and _mechanicJobs[duty] then
 					local playerCoords = GetEntityCoords(PlayerPedId())
-					local maxDistance = 2.0
+					local maxDistance = 5.0
 					local includePlayerVehicle = false
 
 					local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)

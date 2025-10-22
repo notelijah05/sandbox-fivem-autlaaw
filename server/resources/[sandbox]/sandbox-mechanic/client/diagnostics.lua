@@ -72,8 +72,9 @@ AddEventHandler("Mechanic:Client:RunDiagnostics", function(entityData)
 				})
 
 				if partData and partData.item then
-					local itemCount = exports.ox_inventory:ItemsGetCount(partData.item)
-					local itemData = exports.ox_inventory:ItemsGetData(partData.item)
+					local itemCount = exports.ox_inventory:GetItemCount(partData.item)
+					local itemData = exports.ox_inventory:Items(partData.item)
+
 					local percentToFull = 100 - vehDamage[k]
 					local requiredToFix = math.ceil(percentToFull / partData.amount)
 
