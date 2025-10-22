@@ -17,52 +17,6 @@ DROP DATABASE IF EXISTS `sandbox-framework`;
 CREATE DATABASE IF NOT EXISTS `sandbox-framework` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
 USE `sandbox-framework`;
 
-DROP TABLE IF EXISTS `vehicles`;
-CREATE TABLE IF NOT EXISTS `vehicles` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `VIN` varchar(50) NOT NULL,
-  `Type` int(11) NOT NULL DEFAULT 0,
-  `Make` varchar(100) NOT NULL,
-  `Model` varchar(100) NOT NULL,
-  `RegisteredPlate` varchar(20) NOT NULL,
-  `RegistrationDate` int(11) DEFAULT 0,
-  `OwnerType` int(11) NOT NULL DEFAULT 0,
-  `OwnerId` int(11) NOT NULL,
-  `OwnerWorkplace` int(11) DEFAULT NULL,
-  `StorageType` int(11) DEFAULT NULL,
-  `StorageId` varchar(50) DEFAULT NULL,
-  `FirstSpawn` boolean DEFAULT FALSE,
-  `Mileage` decimal(10,2) DEFAULT 0.00,
-  `Fuel` decimal(5,2) DEFAULT 100.00,
-  `DirtLevel` decimal(4,2) DEFAULT 0.00,
-  `Value` int(11) DEFAULT 0,
-  `Class` varchar(10) DEFAULT 'Unknown',
-  `Vehicle` int(11) DEFAULT 0,
-  `FakePlate` boolean DEFAULT FALSE,
-  `Damage` json DEFAULT NULL,
-  `DamagedParts` json DEFAULT NULL,
-  `Polish` json DEFAULT NULL,
-  `PurgeColor` json DEFAULT NULL,
-  `PurgeLocation` varchar(50) DEFAULT '',
-  `Harness` int(11) DEFAULT 0,
-  `Nitrous` int(11) DEFAULT 0,
-  `NeonsDisabled` boolean DEFAULT FALSE,
-  `WheelFitment` json DEFAULT NULL,
-  `Donator` boolean DEFAULT FALSE,
-  `Seized` boolean DEFAULT FALSE,
-  `SeizedTime` int(11) DEFAULT 0,
-  `Properties` longtext DEFAULT NULL,
-  `Created` datetime NOT NULL DEFAULT current_timestamp(),
-  `LastSave` bigint(20) DEFAULT NULL,
-  `ModelType` varchar(50) DEFAULT 'automobile',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `VIN` (`VIN`),
-  KEY `OwnerType` (`OwnerType`),
-  KEY `OwnerId` (`OwnerId`),
-  KEY `RegisteredPlate` (`RegisteredPlate`),
-  CONSTRAINT `Properties` CHECK (json_valid(`Properties`))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 DROP TABLE IF EXISTS `billboards`;
 CREATE TABLE IF NOT EXISTS `billboards` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2182,6 +2136,53 @@ CREATE TABLE IF NOT EXISTS `tokens` (
     `tokens` LONGTEXT DEFAULT NULL,
     PRIMARY KEY (`account`),
     CONSTRAINT `tokens` CHECK (json_valid(`tokens`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `vehicles`;
+CREATE TABLE IF NOT EXISTS `vehicles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `VIN` varchar(50) NOT NULL,
+  `Type` int(11) NOT NULL DEFAULT 0,
+  `Make` varchar(100) NOT NULL,
+  `Model` varchar(100) NOT NULL,
+  `RegisteredPlate` varchar(20) NOT NULL,
+  `RegistrationDate` int(11) DEFAULT 0,
+  `OwnerType` int(11) NOT NULL DEFAULT 0,
+  `OwnerId` int(11) NOT NULL,
+  `OwnerWorkplace` int(11) DEFAULT NULL,
+  `StorageType` int(11) DEFAULT NULL,
+  `StorageId` varchar(50) DEFAULT NULL,
+  `FirstSpawn` boolean DEFAULT FALSE,
+  `Mileage` decimal(10,2) DEFAULT 0.00,
+  `Fuel` decimal(5,2) DEFAULT 100.00,
+  `DirtLevel` decimal(4,2) DEFAULT 0.00,
+  `Value` int(11) DEFAULT 0,
+  `Class` varchar(10) DEFAULT 'Unknown',
+  `Vehicle` int(11) DEFAULT 0,
+  `FakePlate` boolean DEFAULT FALSE,
+  `Damage` json DEFAULT NULL,
+  `DamagedParts` json DEFAULT NULL,
+  `Polish` json DEFAULT NULL,
+  `PurgeColor` json DEFAULT NULL,
+  `PurgeLocation` varchar(50) DEFAULT '',
+  `Harness` int(11) DEFAULT 0,
+  `Nitrous` int(11) DEFAULT 0,
+  `NeonsDisabled` boolean DEFAULT FALSE,
+  `WheelFitment` json DEFAULT NULL,
+  `Donator` boolean DEFAULT FALSE,
+  `Seized` boolean DEFAULT FALSE,
+  `SeizedTime` int(11) DEFAULT 0,
+  `Properties` longtext DEFAULT NULL,
+  `Created` datetime NOT NULL DEFAULT current_timestamp(),
+  `LastSave` bigint(20) DEFAULT NULL,
+  `ModelType` varchar(50) DEFAULT 'automobile',
+  `OwnerLevel` INT(11) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `VIN` (`VIN`),
+  KEY `OwnerType` (`OwnerType`),
+  KEY `OwnerId` (`OwnerId`),
+  KEY `RegisteredPlate` (`RegisteredPlate`),
+  CONSTRAINT `Properties` CHECK (json_valid(`Properties`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `weed`;
