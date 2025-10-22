@@ -127,7 +127,7 @@ function hasValue(tbl, value)
 	return false
 end
 
-local function dumbFuckingShitCuntFucker(type, amount)
+local function getPluralForm(type, amount)
 	if not amount or amount > 1 then
 		return type .. "s"
 	end
@@ -149,19 +149,19 @@ function GetFormattedTimeFromSeconds(seconds)
 				timeString = string.format(
 					"%d %s and %d %s",
 					days,
-					dumbFuckingShitCuntFucker("day", days),
+					getPluralForm("day", days),
 					hours,
-					dumbFuckingShitCuntFucker("hour", hours)
+					getPluralForm("hour", hours)
 				)
 			else
-				timeString = string.format("%d %s", days, dumbFuckingShitCuntFucker("day", days))
+				timeString = string.format("%d %s", days, getPluralForm("day", days))
 			end
 		else
-			timeString = string.format("%d %s", hours, dumbFuckingShitCuntFucker("hour", hours))
+			timeString = string.format("%d %s", hours, getPluralForm("hour", hours))
 		end
 	else
 		local minutes = exports['sandbox-base']:UtilsRound(seconds / 60, 0)
-		timeString = string.format("%d %s", minutes, dumbFuckingShitCuntFucker("minute", minutes))
+		timeString = string.format("%d %s", minutes, getPluralForm("minute", minutes))
 	end
 	return timeString
 end
@@ -354,7 +354,7 @@ RegisterNetEvent("Robbery:Server:Idiot", function(id)
 		exports['sandbox-base']:LoggerInfo(
 			"Exploit",
 			string.format(
-				"%s %s (%s) Exploited Into A Kill Zone (%s) That Was Still Active, They're Now Dead As Fuck",
+				"%s %s (%s) Exploited Into A Kill Zone (%s) That Was Still Active, They're Now Dead",
 				char:GetData("First"),
 				char:GetData("Last"),
 				char:GetData("SID"),
