@@ -50,6 +50,16 @@ const SlotTooltip: React.ForwardRefRenderFunction<
   };
 
   const renderMetadataField = (key: string, value: any) => {
+    if (key === 'Cleans In' && typeof value === 'number') {
+      const date = new Date(value * 1000);
+      const formattedDate = date.toLocaleString();
+      return (
+        <p key={key}>
+          {key}: {formattedDate}
+        </p>
+      );
+    }
+
     if (typeof value === 'string') {
       if (value.includes('\n')) {
         return (
@@ -75,6 +85,36 @@ const SlotTooltip: React.ForwardRefRenderFunction<
           </p>
         );
       }
+    }
+
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      return (
+        <div key={key}>
+          <p>
+            <strong>{key}:</strong>
+          </p>
+          {Object.entries(value).map(([objKey, objValue]) => (
+            <p key={`${key}-${objKey}`} style={{ marginLeft: '10px', fontSize: '0.9em' }}>
+              {objKey}: {typeof objValue === 'object' ? JSON.stringify(objValue) : String(objValue)}
+            </p>
+          ))}
+        </div>
+      );
+    }
+
+    if (Array.isArray(value)) {
+      return (
+        <div key={key}>
+          <p>
+            <strong>{key}:</strong>
+          </p>
+          {value.map((item, index) => (
+            <p key={`${key}-${index}`} style={{ marginLeft: '10px', fontSize: '0.9em' }}>
+              {typeof item === 'object' ? JSON.stringify(item) : String(item)}
+            </p>
+          ))}
+        </div>
+      );
     }
 
     return (

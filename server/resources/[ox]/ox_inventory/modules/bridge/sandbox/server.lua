@@ -589,20 +589,6 @@ function BuildMetaDataTable(cData, item, existing)
             MetaData.hiddenLabel = randomMetaOption.label
             MetaData.hiddenDescription = randomMetaOption.description
         end
-    elseif itemExist.name == "govid" then
-        local genStr = "Male"
-        if cData.Gender == 1 then
-            genStr = "Female"
-        end
-        MetaData.type = string.format("%s %s", cData.First, cData.Last)
-        MetaData.Name = MetaData.type
-        MetaData.Gender = genStr
-        MetaData.PassportID = cData.User
-        MetaData.StateID = cData.SID
-        MetaData.DOB = cData.DOB
-        MetaData.Mugshot = cData.Mugshot
-        MetaData.description = string.format(id_template, MetaData.Gender, formatDateToAmerican(MetaData.DOB),
-            MetaData.StateID)
     elseif itemExist.name == "choplist" then
         MetaData.Owner = cData.SID
         MetaData.ChopList = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(math.random(4, 8),
@@ -614,14 +600,12 @@ function BuildMetaDataTable(cData, item, existing)
         MetaData.description = chopListString
     elseif itemExist.name == "moneybag" and not MetaData.Finish then
         MetaData.Finished = os.time() + (60 * 60 * 24 * math.random(1, 3))
-
-
         if not MetaData.CustomAmt then
-            MetaData.CustomAmt = { Min = 30000, Random = 15000 }
+            MetaData.CustomAmt = 30000 + math.random(15000)
         end
     elseif itemExist.name == "briefcase_cash" and not MetaData.Finish then
         if not MetaData.CustomAmt then
-            MetaData.CustomAmt = { Min = 5000, Random = 10000 }
+            MetaData.CustomAmt = 5000 + math.random(10000)
         end
     elseif itemExist.name == "crypto_voucher" and not MetaData.CryptoCoin and not MetaData.Quantity then
         MetaData.CryptoCoin = "MALD"
@@ -630,10 +614,9 @@ function BuildMetaDataTable(cData, item, existing)
         MetaData.Reputation = "Chopping"
         MetaData.Amount = math.random(1000, 5000)
     elseif itemExist.name == "vpn" then
-        MetaData.VpnName = {
-            First = exports['sandbox-base']:GeneratorNameFirst(),
-            Last = exports['sandbox-base']:GeneratorNameLast(),
-        }
+        local firstName = exports['sandbox-base']:GeneratorNameFirst()
+        local lastName = exports['sandbox-base']:GeneratorNameLast()
+        MetaData.VpnName = firstName .. " " .. lastName
     elseif itemExist.name == "cigarette_pack" then
         MetaData.Count = 30
     elseif itemExist.name == "rusty_strawsprinkbox" then

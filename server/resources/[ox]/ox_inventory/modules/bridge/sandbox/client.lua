@@ -15,9 +15,27 @@ end)
 
 AddEventHandler("onClientResourceStart", function(resource)
     if resource ~= GetCurrentResourceName() then return end
-    exports.ox_inventory:displayMetadata({
+    exports.ox_inventory:displayMetadata({ -- For new metadata options, they need to be added here for them to show in-game.
         Quality = 'Grade',
         Count = 'Count',
+        CryptoCoin = 'Crypto Coin',
+        Quantity = 'Quantity',
+        Reputation = 'Reputation',
+        Amount = 'Amount',
+        VpnName = 'VPN Name',
+        hiddenGemQuality = 'Gem Quality',
+        hiddenLabel = 'Label',
+        hiddenDescription = 'Description',
+        Owner = 'Owner',
+        Finished = 'Cleans In',
+        CustomAmt = 'Amount',
+        MethTable = 'Meth Table',
+        Zone = 'Zone',
+        Still = 'Still',
+        Brew = 'Brew',
+        Inviter = 'Inviter',
+        Officer = 'Officer',
+        Nitrous = 'Nitrous',
     })
 end)
 
