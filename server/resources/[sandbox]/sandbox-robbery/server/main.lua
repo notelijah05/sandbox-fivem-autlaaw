@@ -220,55 +220,6 @@ AddEventHandler('onResourceStart', function(resource)
 			TriggerClientEvent("Robbery:Client:State:Init", source, _bankStates)
 		end)
 
-		exports["sandbox-base"]:RegisterServerCallback("Robbery:Holdup:Do", function(source, data, cb)
-			local pChar = exports['sandbox-characters']:FetchCharacterSource(source)
-			local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
-
-			if pChar ~= nil and tChar ~= nil then
-				local pPed = GetPlayerPed(source)
-				local pLoc = GetEntityCoords(pPed)
-				local tPed = GetPlayerPed(data)
-				local tLoc = GetEntityCoords(pPed)
-
-				if #(vector3(pLoc.x, pLoc.y, pLoc.z) - vector3(tLoc.x, tLoc.y, tLoc.z)) <= 3.0 then
-					exports['sandbox-base']:LoggerInfo(
-						"Robbery",
-						string.format(
-							"%s %s (%s) Robbed %s %s (%s)",
-							pChar:GetData("First"),
-							pChar:GetData("Last"),
-							pChar:GetData("SID"),
-							tChar:GetData("First"),
-							tChar:GetData("Last"),
-							tChar:GetData("SID")
-						),
-						{
-							console = true,
-							file = true,
-							database = true,
-							discord = {
-								embed = true,
-								type = "info",
-								webhook = GetConvar("discord_log_webhook", ""),
-							},
-						}
-					)
-
-					local amt = tChar:GetData("Cash")
-					if amt == 0 or exports['sandbox-finance']:WalletModify(data, -amt) then
-						if amt == 0 or exports['sandbox-finance']:WalletModify(source, amt) then
-							cb({
-								invType = 1,
-								owner = tChar:GetData("SID"),
-							})
-						end
-					end
-				end
-			else
-				cb(false)
-			end
-		end)
-
 		exports["sandbox-base"]:RegisterServerCallback("Robbery:Pickup", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then

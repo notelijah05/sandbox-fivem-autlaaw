@@ -91,27 +91,7 @@ AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
 		exports['sandbox-hud']:ProgressCancel()
 	end, function(cancelled)
 		if not cancelled then
-			exports["sandbox-base"]:ServerCallback("Robbery:Holdup:Do", entity.serverId, function(s)
-				exports.ox_inventory:DumbfuckOpen(s)
-
-				while not LocalPlayer.state.inventoryOpen do
-					Wait(1)
-				end
-
-				CreateThread(function()
-					while LocalPlayer.state.inventoryOpen do
-						if
-							#(
-								GetEntityCoords(LocalPlayer.state.ped)
-								- GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(entity.serverId)))
-							) > 3.0
-						then
-							exports.ox_inventory:CloseAll()
-						end
-						Wait(2)
-					end
-				end)
-			end)
+			exports.ox_inventory:openNearbyInventory()
 		end
 	end)
 end)
