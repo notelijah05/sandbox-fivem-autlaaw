@@ -6,15 +6,18 @@ _effectCds = {
 
 function RegisterItemUse()
 	exports.ox_inventory:RegisterUse("meth_table", "DrugShit", function(source, slot, itemData)
-		exports["sandbox-base"]:ClientCallback(source, "Drugs:Meth:PlaceTable", slot.id, function() end)
+		exports['sandbox-drugs']:StorePlacementData(source, slot)
+		exports["sandbox-base"]:ClientCallback(source, "Drugs:Meth:PlaceTable", slot.slot, function() end)
 	end)
 
 	exports.ox_inventory:RegisterUse("moonshine_still", "DrugShit", function(source, slot, itemData)
-		exports["sandbox-base"]:ClientCallback(source, "Drugs:Moonshine:PlaceStill", slot.id, function() end)
+		exports['sandbox-drugs']:StorePlacementData(source, slot)
+		exports["sandbox-base"]:ClientCallback(source, "Drugs:Moonshine:PlaceStill", slot.slot, function() end)
 	end)
 
 	exports.ox_inventory:RegisterUse("moonshine_barrel", "DrugShit", function(source, slot, itemData)
-		exports["sandbox-base"]:ClientCallback(source, "Drugs:Moonshine:PlaceBarrel", slot.id, function() end)
+		exports['sandbox-drugs']:StorePlacementData(source, slot)
+		exports["sandbox-base"]:ClientCallback(source, "Drugs:Moonshine:PlaceBarrel", slot.slot, function() end)
 	end)
 
 	exports.ox_inventory:RegisterUse("adrenaline", "DrugShit", function(source, slot, itemData)

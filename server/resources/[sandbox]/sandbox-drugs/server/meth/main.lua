@@ -1,5 +1,6 @@
 _placedTables = {}
 _inProgCooks = {}
+_pendingPlacements = {}
 
 local bought = {}
 local _toolsForSale = {
@@ -38,6 +39,19 @@ end)
 exports('MethIsTablePlaced', function(tableId)
     return MySQL.single.await('SELECT COUNT(table_id) as Count FROM placed_meth_tables WHERE table_id = ?',
         { tableId })?.Count or 0 > 0
+end)
+
+exports('StorePlacementData', function(source, slot)
+    _pendingPlacements[source] = slot
+end)
+
+exports('GetPlacementData', function(source)
+    local data = _pendingPlacements[source]
+    return data
+end)
+
+exports('ClearPlacementData', function(source)
+    _pendingPlacements[source] = nil
 end)
 
 exports('MethCreatePlacedTable', function(tableId, owner, tier, coords, heading, created)
@@ -149,18 +163,25 @@ AddEventHandler("Drugs:Server:Startup", function()
     exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:FinishTablePlacement", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
-            local table = exports.ox_inventory:GetItem(data.data)
-            if table.Owner == tostring(char:GetData("SID")) then
-                local md = json.decode(table.MetaData)
-                local tableData = exports['sandbox-drugs']:MethGetTable(md.MethTable)
-                if exports.ox_inventory:RemoveId(char:GetData("SID"), 1, table) then
-                    exports['sandbox-drugs']:MethCreatePlacedTable(md.MethTable, char:GetData("SID"), tableData.tier,
-                        data.endCoords
-                        .coords, data.endCoords.rotation, table.CreateDate)
-                    cb(true)
+            local slot = exports['sandbox-drugs']:GetPlacementData(source)
+            if slot and (slot.name == "meth_table" or slot.Name == "meth_table") then
+                local md = slot.metadata or slot.MetaData or {}
+                if md.MethTable then
+                    local tableData = exports['sandbox-drugs']:MethGetTable(md.MethTable)
+                    if exports.ox_inventory:RemoveItem(char:GetData("SID"), "meth_table", 1, md) then
+                        exports['sandbox-drugs']:MethCreatePlacedTable(md.MethTable, char:GetData("SID"),
+                            tableData.tier,
+                            data.endCoords.coords, data.endCoords.rotation, tableData.created)
+                        exports['sandbox-drugs']:ClearPlacementData(source)
+                        cb(true)
+                    else
+                        cb(false)
+                    end
                 else
                     cb(false)
                 end
+            else
+                cb(false)
             end
         else
             cb(false)
@@ -364,7 +385,12 @@ AddEventHandler("Drugs:Server:Startup", function()
             if v.id == data then
                 local coinData = exports['sandbox-finance']:CryptoCoinGet(v.coin)
                 if exports['sandbox-finance']:CryptoExchangeRemove(v.coin, char:GetData("CryptoWallet"), v.price) then
-                    exports.ox_inventory:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
+                    if v.item == "meth_table" then
+                        local tableId = exports['sandbox-drugs']:MethGenerateTable(1)
+                        exports.ox_inventory:AddItem(char:GetData("SID"), v.item, 1, { MethTable = tableId }, 1)
+                    else
+                        exports.ox_inventory:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
+                    end
                     _toolsForSale[v.item][char:GetData("SID")] = true
                 else
                     exports['sandbox-hud']:Notification(source, "error",

@@ -226,17 +226,25 @@ AddEventHandler("Drugs:Server:Startup", function()
     exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:FinishStillPlacement", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
-            local still = exports.ox_inventory:GetItem(data.data)
-            if still.Owner == tostring(char:GetData("SID")) then
-                local md = json.decode(still.MetaData)
-                local stillData = exports['sandbox-drugs']:MoonshineStillGet(md.Still)
-                if exports.ox_inventory:RemoveId(char:GetData("SID"), 1, still) then
-                    exports['sandbox-drugs']:MoonshineStillCreatePlaced(md.Still, char:GetData("SID"), stillData.tier,
-                        data.endCoords.coords, data.endCoords.rotation, still.CreateDate)
-                    cb(true)
+            local slot = exports['sandbox-drugs']:GetPlacementData(source)
+            if slot and (slot.name == "moonshine_still" or slot.Name == "moonshine_still") then
+                local md = slot.metadata or slot.MetaData or {}
+                if md.Still then
+                    local stillData = exports['sandbox-drugs']:MoonshineStillGet(md.Still)
+                    if exports.ox_inventory:RemoveItem(char:GetData("SID"), "moonshine_still", 1, md) then
+                        exports['sandbox-drugs']:MoonshineStillCreatePlaced(md.Still, char:GetData("SID"),
+                            stillData.tier,
+                            data.endCoords.coords, data.endCoords.rotation, stillData.created)
+                        exports['sandbox-drugs']:ClearPlacementData(source)
+                        cb(true)
+                    else
+                        cb(false)
+                    end
                 else
                     cb(false)
                 end
+            else
+                cb(false)
             end
         else
             cb(false)
@@ -414,16 +422,19 @@ AddEventHandler("Drugs:Server:Startup", function()
     exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:FinishBarrelPlacement", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
-            local barrel = exports.ox_inventory:GetItem(data.data)
-            if barrel.Owner == tostring(char:GetData("SID")) then
-                local md = json.decode(barrel.MetaData)
-                if exports.ox_inventory:RemoveId(char:GetData("SID"), 1, barrel) then
+            local slot = exports['sandbox-drugs']:GetPlacementData(source)
+            if slot and (slot.name == "moonshine_barrel" or slot.Name == "moonshine_barrel") then
+                local md = slot.metadata or slot.MetaData or {}
+                if exports.ox_inventory:RemoveItem(char:GetData("SID"), "moonshine_barrel", 1, md) then
                     exports['sandbox-drugs']:MoonshineBarrelCreatePlaced(char:GetData("SID"), data.endCoords.coords,
                         data.endCoords.rotation, os.time(), md.Brew)
+                    exports['sandbox-drugs']:ClearPlacementData(source)
                     cb(true)
                 else
                     cb(false)
                 end
+            else
+                cb(false)
             end
         else
             cb(false)
