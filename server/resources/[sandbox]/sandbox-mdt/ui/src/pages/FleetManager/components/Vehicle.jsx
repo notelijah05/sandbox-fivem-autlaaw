@@ -20,23 +20,18 @@ const useStyles = makeStyles((theme) => ({
 export default ({ vehicle }) => {
 	const classes = useStyles();
 	const history = useNavigate();
-	const myJob = useSelector(state => state.app.govJob);
-	const jobData = useSelector(state => state.data.data.governmentJobsData)?.[myJob.Id];
+	const myJob = useSelector((state) => state.app.govJob);
+	const jobData = useSelector((state) => state.data.data.governmentJobsData)?.[myJob.Id];
 
 	const onClick = () => {
 		history(`/vehicles?vehicle=${vehicle.VIN}&fleet-manage=1`);
 	};
 
-	const workplaceName = myJob?.Workplaces?.find(w => w.Id == vehicle.Owner?.Workplace)
-
 	return (
 		<ListItem className={classes.wrapper} button onClick={onClick}>
 			<Grid container>
 				<Grid item xs={2}>
-					<ListItemText
-						primary="VIN"
-						secondary={vehicle.VIN}
-					/>
+					<ListItemText primary="VIN" secondary={vehicle.VIN} />
 				</Grid>
 				<Grid item xs={1}>
 					<ListItemText primary="Plate" secondary={vehicle.RegisteredPlate} />
@@ -44,31 +39,39 @@ export default ({ vehicle }) => {
 				<Grid item xs={2}>
 					<ListItemText
 						primary="Make / Model"
-						secondary={`${vehicle.Make} ${vehicle.Model}${vehicle.Type !== 0 ? ` [${VehicleTypes[vehicle.Type] ?? 'Vehicle'}]` : ''}`}
+						secondary={`${vehicle.Make} ${vehicle.Model}${
+							vehicle.Type !== 0 ? ` [${VehicleTypes[vehicle.Type] ?? 'Vehicle'}]` : ''
+						}`}
 					/>
 				</Grid>
 				<Grid item xs={1}>
-					<ListItemText
-						primary="Dept."
-						secondary={workplaceName ? workplaceName : "All"}
-					/>
+					<ListItemText primary="Dept." secondary={vehicle.Owner?.Workplace.toUpperCase() || 'All'} />
 				</Grid>
 				<Grid item xs={3}>
 					<ListItemText
 						primary="Assigned Employees"
-						secondary={vehicle.GovAssigned?.length > 0 ? vehicle.GovAssigned.map(g => `(${g.Callsign ?? 'N/A'}) ${g.First[0]}. ${g.Last}`).join(", ") : 'Non Assigned'}
+						secondary={
+							vehicle.GovAssigned?.length > 0
+								? vehicle.GovAssigned.map(
+										(g) => `(${g.Callsign ?? 'N/A'}) ${g.First[0]}. ${g.Last}`,
+								  ).join(', ')
+								: 'Non Assigned'
+						}
 					/>
 				</Grid>
 				<Grid item xs={2}>
-					<ListItemText
-						primary="Storage"
-						secondary={vehicle.Storage?.Name ?? "Unknown"}
-					/>
+					<ListItemText primary="Storage" secondary={vehicle.Storage?.Name ?? 'Unknown'} />
 				</Grid>
 				<Grid item xs={1}>
 					<ListItemText
 						primary="Reg. Date"
-						secondary={vehicle.RegistrationDate ? <Moment date={vehicle.RegistrationDate} unix format="LL" /> : 'Unknown'}
+						secondary={
+							vehicle.RegistrationDate ? (
+								<Moment date={vehicle.RegistrationDate} unix format="LL" />
+							) : (
+								'Unknown'
+							)
+						}
 					/>
 				</Grid>
 			</Grid>

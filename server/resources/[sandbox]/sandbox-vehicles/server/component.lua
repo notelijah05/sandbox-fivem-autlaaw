@@ -457,7 +457,7 @@ exports("OwnedGetVIN", function(VIN, cb)
         "SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, " ..
         "FirstSpawn, Mileage, Fuel, DirtLevel, Value, Class, Vehicle, FakePlate, RegistrationDate, " ..
         "Damage, DamagedParts, Polish, PurgeColor, PurgeLocation, Harness, Nitrous, NeonsDisabled, " ..
-        "WheelFitment, Donator, Seized, SeizedTime, Properties, ModelType FROM vehicles WHERE VIN = ?",
+        "WheelFitment, Donator, Seized, SeizedTime, Properties, ModelType, OwnerLevel FROM vehicles WHERE VIN = ?",
         { VIN }
     )
 
@@ -507,7 +507,8 @@ exports("OwnedGetVIN", function(VIN, cb)
         vehicle.Owner = {
             Type = vehicle.OwnerType,
             Id = vehicle.OwnerId,
-            Workplace = vehicle.OwnerWorkplace
+            Workplace = vehicle.OwnerWorkplace,
+            Level = vehicle.OwnerLevel
         }
 
         vehicle.Storage = {
@@ -580,7 +581,7 @@ exports("OwnedGetAll",
             "SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, " ..
             "FirstSpawn, Mileage, Fuel, DirtLevel, Value, Class, Vehicle, FakePlate, RegistrationDate, " ..
             "Damage, DamagedParts, Polish, PurgeColor, PurgeLocation, Harness, Nitrous, NeonsDisabled, " ..
-            "WheelFitment, Donator, Seized, SeizedTime, Properties FROM vehicles " ..
+            "WheelFitment, Donator, Seized, SeizedTime, Properties, OwnerLevel FROM vehicles " ..
             whereClause,
             params
         )
@@ -634,7 +635,8 @@ exports("OwnedGetAll",
                     v.Owner = {
                         Type = v.OwnerType,
                         Id = v.OwnerId,
-                        Workplace = v.OwnerWorkplace
+                        Workplace = v.OwnerWorkplace,
+                        Level = v.OwnerLevel
                     }
 
                     v.Storage = {
