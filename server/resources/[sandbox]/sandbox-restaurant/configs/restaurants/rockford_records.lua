@@ -15,10 +15,6 @@ table.insert(Config.Restaurants, {
             },
             data = {
                 business = "rockford_records",
-                inventory = {
-                    invType = 25,
-                    owner = "rockford_records-pickup-1",
-                },
             },
         },
         {
@@ -34,16 +30,11 @@ table.insert(Config.Restaurants, {
             },
             data = {
                 business = "rockford_records",
-                inventory = {
-                    invType = 25,
-                    owner = "rockford_records-pickup-1",
-                },
             },
         },
     },
-    Warmers = {
+    Fridges = {
         {
-            fridge = true,
             id = "rockford_records-1",
             coords = vector3(-994.04, -257.81, 39.04),
             width = 1.2,
@@ -59,14 +50,9 @@ table.insert(Config.Restaurants, {
             },
             data = {
                 business = "rockford_records",
-                inventory = {
-                    invType = 110,
-                    owner = "rockford_records-1",
-                },
             },
         },
         {
-            fridge = true,
             id = "rockford_records-2",
             coords = vector3(-995.04, -259.43, 39.04),
             width = 1.0,
@@ -82,10 +68,6 @@ table.insert(Config.Restaurants, {
             },
             data = {
                 business = "rockford_records",
-                inventory = {
-                    invType = 110,
-                    owner = "rockford_records-2",
-                },
             },
         },
     },

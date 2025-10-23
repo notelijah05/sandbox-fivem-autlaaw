@@ -15,10 +15,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "burgershot",
-				inventory = {
-					invType = 25,
-					owner = "burgershot-pickup-2",
-				},
 			},
 		},
 		{ -- Burger Shot
@@ -34,10 +30,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "burgershot",
-				inventory = {
-					invType = 171,
-					owner = "burgershot-pickup-2",
-				},
 			},
 		},
 		{ -- Burger Shot
@@ -53,10 +45,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "burgershot",
-				inventory = {
-					invType = 172,
-					owner = "burgershot-pickup-3",
-				},
 			},
 		},
 		{ -- Burger Shot
@@ -73,10 +61,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "burgershot",
-				inventory = {
-					invType = 173,
-					owner = "burgershot-pickup-4",
-				},
 			},
 		},
 	},
@@ -97,10 +81,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "burgershot",
-				inventory = {
-					invType = 24,
-					owner = "burgershot-warmer-1",
-				},
 			},
 		},
 		{ -- Burger Shot
@@ -119,14 +99,11 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "burgershot",
-				inventory = {
-					invType = 24,
-					owner = "burgershot-warmer-2",
-				},
 			},
 		},
+	},
+	Fridges = {
 		{
-			fridge = true,
 			id = "burgershot-fridge-1",
 			coords = vector3(-1183.35, -900.94, 13.8),
 			width = 2.6,
@@ -142,10 +119,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "burgershot",
-				inventory = {
-					invType = 174,
-					owner = "burgershot-fridge-1",
-				},
 			},
 		},
 	},

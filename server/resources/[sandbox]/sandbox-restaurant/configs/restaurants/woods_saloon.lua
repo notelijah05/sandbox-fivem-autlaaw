@@ -15,10 +15,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "woods_saloon",
-				inventory = {
-					invType = 165,
-					owner = "woods-saloon-pickup-1",
-				},
 			},
 		},
 		{
@@ -34,10 +30,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "woods_saloon",
-				inventory = {
-					invType = 166,
-					owner = "woods-saloon-pickup-2",
-				},
 			},
 		},
 		{
@@ -53,14 +45,10 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "woods_saloon",
-				inventory = {
-					invType = 167,
-					owner = "woods-saloon-pickup-3",
-				},
 			},
 		},
 	},
-	Warmers = {
+	Fridges = {
 		{
 			fridge = true,
 			id = "woods-saloon-fridge-1",
@@ -78,10 +66,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "woods_saloon",
-				inventory = {
-					invType = 163,
-					owner = "woods-saloon-fridge-1",
-				},
 			},
 		},
 	},

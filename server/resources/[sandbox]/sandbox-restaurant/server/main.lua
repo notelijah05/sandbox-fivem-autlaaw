@@ -12,13 +12,21 @@ end)
 function RunRestaurantJobUpdate(source, onSpawn)
 	local charJobs = exports['sandbox-jobs']:GetJobs(source)
 	local warmersList = {}
+	local fridgesList = {}
+
 	for k, v in ipairs(charJobs) do
 		local jobWarmers = _warmers[v.Id]
 		if jobWarmers then
 			table.insert(warmersList, jobWarmers)
 		end
+
+		local jobFridges = _fridges[v.Id]
+		if jobFridges then
+			table.insert(fridgesList, jobFridges)
+		end
 	end
-	TriggerClientEvent("Restaurant:Client:CreatePoly", source, _pickups, warmersList, onSpawn)
+
+	TriggerClientEvent("Restaurant:Client:CreatePoly", source, _pickups, warmersList, fridgesList, onSpawn)
 end
 
 AddEventHandler("Jobs:Server:JobUpdate", function(source)

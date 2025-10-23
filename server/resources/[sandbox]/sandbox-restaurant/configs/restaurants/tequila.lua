@@ -15,10 +15,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "tequila",
-				inventory = {
-					invType = 25,
-					owner = "tequila-pickup-1",
-				},
 			},
 		},
 		{
@@ -34,17 +30,12 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "tequila",
-				inventory = {
-					invType = 25,
-					owner = "tequila-pickup-2",
-				},
 			},
 		},
 	},
-	Warmers = {
+	Fridges = {
 		{
-			fridge = true,
-			id = "tequila-1",
+			id = "tequila-fridge-1",
 			coords = vector3(-562.03, 290.0, 82.18),
 			width = 2.0,
 			length = 1.0,
@@ -59,15 +50,10 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "tequila",
-				inventory = {
-					invType = 82,
-					owner = "tequila-1",
-				},
 			},
 		},
 		{
-			fridge = true,
-			id = "tequila-2",
+			id = "tequila-fridge-2",
 			coords = vector3(-563.03, 284.55, 82.18),
 			width = 0.8,
 			length = 1.0,
@@ -82,10 +68,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "tequila",
-				inventory = {
-					invType = 82,
-					owner = "tequila-2",
-				},
 			},
 		},
 	},
