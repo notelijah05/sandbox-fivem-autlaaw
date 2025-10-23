@@ -30,10 +30,16 @@ exports('ShowroomUpdate', function(dealershipId, showroom)
         exports.oxmysql:execute(
             'INSERT INTO dealer_showrooms (dealership, showroom) VALUES (?, ?) ON DUPLICATE KEY UPDATE showroom = ?',
             { dealershipId, showroomJson, showroomJson },
-            function(affectedRows)
-                if affectedRows and affectedRows > 0 then
-                    -- FiveM is dumb
-                    local currentData = GlobalState.DealershipShowrooms
+            function(result)
+                local affected = 0
+                if type(result) == 'number' then
+                    affected = result
+                elseif type(result) == 'table' then
+                    affected = result.affectedRows or result.changedRows or 0
+                end
+
+                if affected > 0 then
+                    local currentData = GlobalState.DealershipShowrooms or {}
                     currentData[dealershipId] = showroom
                     GlobalState.DealershipShowrooms = currentData
 
@@ -42,7 +48,9 @@ exports('ShowroomUpdate', function(dealershipId, showroom)
                 else
                     p:resolve(false)
                 end
-            end)
+            end
+        )
+
         return Citizen.Await(p)
     end
     return false
