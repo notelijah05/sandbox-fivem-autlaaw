@@ -25,7 +25,7 @@ local _toolsForSale = {
 
 AddEventHandler("Labor:Server:Startup", function()
 	exports['sandbox-pedinteraction']:VendorCreate("CornerDealer", false, "Unknown", false, {}, _toolsForSale,
-		"badge-dollar", "View Offers", false, false,
+		"fa-solid fa-money-bill", "View Offers", false, false,
 		true)
 
 	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:Enable", function(source, data, cb)

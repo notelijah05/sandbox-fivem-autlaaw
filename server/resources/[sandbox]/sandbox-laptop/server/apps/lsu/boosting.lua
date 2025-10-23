@@ -718,7 +718,7 @@ AddEventHandler("Laptop:Server:LSUnderground:Boosting:ActionRequest", function(s
                         local char = exports['sandbox-characters']:FetchCharacterSource(v.Source)
                         if char then
                             local profiles = char:GetData("Profiles")
-                            local hasVpn = hasValue(char:GetData("States") or {}, "PHONE_VPN")
+                            local hasVpn = exports.ox_inventory:Search('count', 'vpn') > 0
                             local isLSU = hasValue(char:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
                             local hasDongle = hasValue(char:GetData("States") or {}, "RACE_DONGLE")
 

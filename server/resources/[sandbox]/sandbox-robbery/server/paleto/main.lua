@@ -506,7 +506,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						GlobalState["PaletoInProgress"] = true
 
 						if
-							hasValue(char:GetData("States") or {}, "PHONE_VPN")
+							exports.ox_inventory:Search('count', 'vpn') > 0
 							and exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1)
 						then
 							local slot = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"),

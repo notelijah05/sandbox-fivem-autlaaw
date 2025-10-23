@@ -9,16 +9,16 @@ RegisterNetEvent("Vendor:Client:Set", function(vendors)
 
 		if v.type == "ped" then
 			exports['sandbox-pedinteraction']:Add(v.id, v.model, v.position.coords, v.position.heading, 50.0, {
-				{
-					icon = v.iconOverride or "question",
-					text = v.labelOverride or "Buy Items",
-					event = "Vendor:Client:GetItems",
-					data = {
-						id = v.id,
+					{
+						icon = v.iconOverride or "fa-solid fa-question",
+						text = v.labelOverride or "Buy Items",
+						minDist = 2.0,
+						onSelect = function()
+							TriggerEvent("Vendor:Client:GetItems", v.id)
+						end,
 					},
-					minDist = 2.0,
-				},
-			}, v.iconOverride or "question", v.position.scenario or false, v.position.anim or nil)
+				}, v.iconOverride or "fa-solid fa-question", v.position.scenario or false, v.position.anim or nil,
+				v.position.component or nil)
 		elseif v.type == "poly" then
 			exports.ox_target:addBoxZone({
 				id = v.id,
@@ -30,10 +30,12 @@ RegisterNetEvent("Vendor:Client:Set", function(vendors)
 				maxZ = v.position.options.maxZ,
 				options = {
 					{
-						icon = v.iconOverride or "question",
+						icon = v.iconOverride or "fa-solid fa-question",
 						label = v.labelOverride or "Buy Items",
-						event = "Vendor:Client:GetItems",
 						distance = 2.0,
+						onSelect = function()
+							TriggerEvent("Vendor:Client:GetItems", v.id)
+						end,
 					},
 				}
 			})
@@ -55,16 +57,15 @@ RegisterNetEvent(
 			if type == "ped" then
 				exports['sandbox-pedinteraction']:Add(id, model, position.coords, position.heading, 50.0, {
 					{
-						icon = iconOverride or "question",
+						icon = iconOverride or "fa-solid fa-question",
 						text = labelOverride or "Buy Items",
-						event = "Vendor:Client:GetItems",
-						data = {
-							id = id,
-						},
 						minDist = 2.0,
 						jobs = false,
+						onSelect = function()
+							TriggerEvent("Vendor:Client:GetItems", id)
+						end,
 					},
-				}, iconOverride or "question", position.scenario or false, position.anim or false)
+				}, iconOverride or "fa-solid fa-question", position.scenario or false, position.anim or false)
 			elseif type == "poly" then
 				exports.ox_target:addBoxZone({
 					id = id,
@@ -76,10 +77,12 @@ RegisterNetEvent(
 					maxZ = position.options.maxZ,
 					options = {
 						{
-							icon = iconOverride or "question",
+							icon = iconOverride or "fa-solid fa-question",
 							label = labelOverride or "Buy Items",
-							event = "Vendor:Client:GetItems",
 							distance = 2.0,
+							onSelect = function()
+								TriggerEvent("Vendor:Client:GetItems", id)
+							end,
 						},
 					}
 				})
@@ -103,7 +106,9 @@ RegisterNetEvent("Vendor:Client:Remove", function(id)
 end)
 
 AddEventHandler("Vendor:Client:GetItems", function(entity, data)
-	exports["sandbox-base"]:ServerCallback("Vendor:GetItems", data.id, function(items)
+	-- Handle both direct ID parameter and args data
+	local vendorId = data and data.id or entity
+	exports["sandbox-base"]:ServerCallback("Vendor:GetItems", vendorId, function(items)
 		local itemList = {}
 
 		if #items > 0 then
@@ -115,7 +120,7 @@ AddEventHandler("Vendor:Client:GetItems", function(entity, data)
 						description = "Not For Sale Yet",
 					})
 				elseif v.qty == -1 or v.qty > 0 then
-					local stockStr = _created[data.id].isUnique and "Stock: 1 Per Person, Per Tsunami"
+					local stockStr = _created[vendorId].isUnique and "Stock: 1 Per Person, Per Tsunami"
 						or (v.qty == -1 and "Stock: ∞" or string.format("Stock: %s", v.qty))
 					local priceStr = v.coin ~= nil and string.format("%s $%s", v.price, v.coin)
 						or string.format("$%s", v.price)
@@ -126,7 +131,7 @@ AddEventHandler("Vendor:Client:GetItems", function(entity, data)
 						description = descStr,
 						event = "Vendor:Client:BuyItem",
 						data = {
-							id = data.id,
+							id = vendorId,
 							index = v.index,
 						},
 					})
@@ -147,7 +152,7 @@ AddEventHandler("Vendor:Client:GetItems", function(entity, data)
 
 		exports['sandbox-hud']:ListMenuShow({
 			main = {
-				label = _created[data.id].name,
+				label = _created[vendorId].name,
 				items = itemList,
 			},
 		})

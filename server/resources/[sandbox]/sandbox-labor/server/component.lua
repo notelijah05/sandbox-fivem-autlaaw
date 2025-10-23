@@ -399,7 +399,7 @@ exports('CreateWorkgroup', function(source)
 		end
 
 		local name = { First = char:GetData("First"), Last = char:GetData("Last") }
-		if hasValue(char:GetData("States") or {}, "PHONE_VPN") then
+		if exports.ox_inventory:Search('count', 'vpn') > 0 then
 			local vpn = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
 			name = vpn.MetaData.VpnName
 		end
@@ -482,7 +482,7 @@ exports('JoinWorkgroup', function(creator, source)
 					end
 
 					local name = { First = char:GetData("First"), Last = char:GetData("Last") }
-					if hasValue(char:GetData("States") or {}, "PHONE_VPN") then
+					if exports.ox_inventory:Search('count', 'vpn') > 0 then
 						local vpn = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
 						name = vpn.MetaData.VpnName
 					end
@@ -549,7 +549,7 @@ exports('RequestWorkgroup', function(group, source)
 						_pendingInvites[source] = group.Creator.ID
 
 						local name = { First = char:GetData("First"), Last = char:GetData("Last") }
-						if hasValue(char:GetData("States") or {}, "PHONE_VPN") then
+						if exports.ox_inventory:Search('count', 'vpn') > 0 then
 							local vpn = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
 							name = vpn.MetaData.VpnName
 						end
