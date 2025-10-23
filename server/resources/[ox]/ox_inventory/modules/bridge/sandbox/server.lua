@@ -615,19 +615,9 @@ function BuildMetaDataTable(cData, item, existing)
     elseif itemExist.name == "moneybag" and not MetaData.Finish then
         MetaData.Finished = os.time() + (60 * 60 * 24 * math.random(1, 3))
 
-        local ownsVespucci = exports.prestige_gangs:ownsTerritory(cData.Source, 'vespucci')
-
-        if ownsVespucci then
-            MetaData.Finished /= 2
-        end
 
         if not MetaData.CustomAmt then
             MetaData.CustomAmt = { Min = 30000, Random = 15000 }
-        end
-
-        if ownsVespucci then
-            MetaData.CustomAmt.Min = math.ceil(MetaData.CustomAmt.Min * 1.2)
-            MetaData.CustomAmt.Random = math.ceil(MetaData.CustomAmt.Random * 1.2)
         end
     elseif itemExist.name == "briefcase_cash" and not MetaData.Finish then
         if not MetaData.CustomAmt then
@@ -641,8 +631,8 @@ function BuildMetaDataTable(cData, item, existing)
         MetaData.Amount = math.random(1000, 5000)
     elseif itemExist.name == "vpn" then
         MetaData.VpnName = {
-            First = Generator.Name:First(),
-            Last = Generator.Name:Last(),
+            First = exports['sandbox-base']:GeneratorNameFirst(),
+            Last = exports['sandbox-base']:GeneratorNameLast(),
         }
     elseif itemExist.name == "cigarette_pack" then
         MetaData.Count = 30
@@ -700,6 +690,8 @@ function BuildMetaDataTable(cData, item, existing)
 
     return MetaData
 end
+
+exports('BuildMetaDataTable', BuildMetaDataTable)
 
 local itemUseContext = {}
 
@@ -1110,7 +1102,7 @@ function RegisterRandomItems()
         -- TriggerClientEvent('Inventory:Client:RandomItems:BriefcaseCash', source)
         -- Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account, Winnings, {
         -- 	type = "deposit",
-        -- 	title = "Prestige Lotto Event",
+        -- 	title = "Lotto Event",
         -- 	description = string.format("Lotto Earnings - $%s", Winnings),
         -- 	data = Winnings
         -- })

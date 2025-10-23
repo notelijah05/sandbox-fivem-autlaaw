@@ -230,6 +230,19 @@ function Items.Metadata(inv, item, metadata, count)
         end
     end
 
+    if inv?.player?.source then
+        local char = exports['sandbox-characters']:FetchCharacterSource(inv.player.source)
+        if char then
+            local cData = char:GetData()
+            local customMetadata = exports['ox_inventory']:BuildMetaDataTable(cData, item.name, metadata)
+            if customMetadata and next(customMetadata) then
+                for k, v in pairs(customMetadata) do
+                    metadata[k] = v
+                end
+            end
+        end
+    end
+
     if count > 1 and not item.stack then
         count = 1
     end
