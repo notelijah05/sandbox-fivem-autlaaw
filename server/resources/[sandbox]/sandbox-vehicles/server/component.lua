@@ -561,7 +561,7 @@ exports("OwnedGetAll",
             table.insert(params, type(checkFleetOwner.Level) == 'number' and checkFleetOwner.Level or 0)
         end
 
-        if storageType and storageId then
+        if storageType ~= nil and storageId ~= nil then
             table.insert(whereConditions, "StorageType = ? AND StorageId = ?")
             table.insert(params, storageType)
             table.insert(params, storageId)
@@ -574,7 +574,7 @@ exports("OwnedGetAll",
 
         local whereClause = ""
         if #whereConditions > 0 then
-            whereClause = "WHERE " .. table.concat(whereConditions, " OR ")
+            whereClause = "WHERE " .. table.concat(whereConditions, " AND ")
         end
 
         local results = MySQL.query.await(
