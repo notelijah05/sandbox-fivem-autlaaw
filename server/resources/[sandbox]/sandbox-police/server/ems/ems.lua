@@ -118,7 +118,7 @@ function EMSCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("EMS:ApplyBandage", function(source, data, cb)
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
 		if exports['sandbox-jobs']:HasJob(source, "ems") then
-			if exports.ox_inventory:Remove(myChar:GetData("SID"), 1, "bandage", 1) then
+			if exports.ox_inventory:Remove(myChar:GetData("SID"), "bandage", 1) then
 				local ped = GetPlayerPed(data)
 				local currHp = GetEntityHealth(ped)
 				if currHp < (GetEntityMaxHealth(ped) * 0.75) then
