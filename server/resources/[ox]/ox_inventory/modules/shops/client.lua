@@ -100,7 +100,7 @@ local function cleanupPeds()
             DeletePed(ped)
         end
     end
-    SpawnedPeds = {}
+    table.wipe(SpawnedPeds)
 end
 
 local function cleanup()
@@ -131,7 +131,12 @@ local function wipeShops()
     cleanup()
 end
 
+local isRefreshing = false
+
 local function refreshShops()
+    if isRefreshing then return end
+    isRefreshing = true
+
     wipeShops()
 
     local id = 0
@@ -305,6 +310,8 @@ local function refreshShops()
 
         ::skipLoop::
     end
+
+    isRefreshing = false
 end
 
 AddEventHandler('onResourceStop', function(resourceName)
