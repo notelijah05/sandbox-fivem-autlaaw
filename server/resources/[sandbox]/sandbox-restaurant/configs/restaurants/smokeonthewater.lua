@@ -15,10 +15,6 @@ table.insert(Config.Restaurants, {
             },
             data = {
                 business = "weed",
-                inventory = {
-                    invType = 25,
-                    owner = "weed-pickup-1",
-                },
             },
         },
     },

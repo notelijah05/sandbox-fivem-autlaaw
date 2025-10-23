@@ -16,10 +16,6 @@ table.insert(Config.Restaurants, {
 			},
 			data = {
 				business = "vagos",
-				inventory = {
-					invType = 232,
-					owner = "vagos_pickup-1",
-				},
 			},
 		},
 	},

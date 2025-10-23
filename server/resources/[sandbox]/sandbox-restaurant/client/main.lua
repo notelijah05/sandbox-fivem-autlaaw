@@ -604,7 +604,7 @@ function Startup()
 	})
 end
 
-RegisterNetEvent("Restaurant:Client:CreatePoly", function(pickups, warmersList, onSpawn)
+RegisterNetEvent("Restaurant:Client:CreatePoly", function(pickups, warmersList, fridgesList, onSpawn)
 	for k, v in ipairs(pickups) do
 		local data = GlobalState[string.format("Restaurant:Pickup:%s", v)]
 		if data ~= nil then
@@ -670,38 +670,71 @@ RegisterNetEvent("Restaurant:Client:CreatePoly", function(pickups, warmersList, 
 		end
 	end
 
-	for k, v in ipairs(warmersList) do
-		for k2, v2 in ipairs(v) do
-			local data = GlobalState[string.format("Restaurant:Warmers:%s", v2)]
-			if data ~= nil then
-				local icon = data.fridge and "refrigerator" or "oven"
-				exports.ox_target:addBoxZone({
-					id = data.id,
-					coords = data.coords,
-					size = vector3(data.width, data.length, 2.0),
-					rotation = data.options.heading or 0,
-					debug = false,
-					minZ = data.options.minZ,
-					maxZ = data.options.maxZ,
-					options = {
-						{
-							icon = icon,
-							label = data.fridge and "Open Fridge" or "Open Warmer",
-							onSelect = function()
-								TriggerEvent("Restaurant:Client:Pickup", data.data)
-							end,
-							groups = { data.job },
-							reqDuty = true,
-						},
-					}
-				})
+	if warmersList then
+		for k, v in ipairs(warmersList) do
+			for _, warmerId in ipairs(v) do
+				local data = GlobalState[string.format("Restaurant:Warmers:%s", warmerId)]
+				if data ~= nil then
+					exports.ox_target:addBoxZone({
+						id = data.id,
+						coords = data.coords,
+						size = vector3(data.width, data.length, 2.0),
+						rotation = data.options.heading or 0,
+						debug = false,
+						minZ = data.options.minZ,
+						maxZ = data.options.maxZ,
+						options = {
+							{
+								icon = "oven",
+								label = "Open Warmer",
+								onSelect = function()
+									TriggerEvent("Restaurant:Client:Pickup", data.data)
+								end,
+								groups = data.restrict and data.restrict.jobs or nil,
+								reqDuty = true,
+							},
+						}
+					})
+				end
+			end
+		end
+	end
+
+	if fridgesList then
+		for k, v in ipairs(fridgesList) do
+			for _, fridgeId in ipairs(v) do
+				local data = GlobalState[string.format("Restaurant:Fridges:%s", fridgeId)]
+				if data ~= nil then
+					exports.ox_target:addBoxZone({
+						id = data.id,
+						coords = data.coords,
+						size = vector3(data.width, data.length, 2.0),
+						rotation = data.options.heading or 0,
+						debug = false,
+						minZ = data.options.minZ,
+						maxZ = data.options.maxZ,
+						options = {
+							{
+								icon = "refrigerator",
+								label = "Open Fridge",
+								onSelect = function()
+									TriggerEvent("Restaurant:Client:Pickup", data.data)
+								end,
+								groups = data.restrict and data.restrict.jobs or nil,
+								reqDuty = true,
+							},
+						}
+					})
+				end
 			end
 		end
 	end
 end)
 
-AddEventHandler("Restaurant:Client:Pickup", function(entity, data)
-	exports.ox_inventory:openInventory(data.inventory)
+AddEventHandler("Restaurant:Client:Pickup", function(data)
+	if data.inventory then
+		exports.ox_inventory:openInventory(data.inventory, data.inventoryId)
+	end
 end)
 
 AddEventHandler("Restaurant:Client:ClockIn", function(data)

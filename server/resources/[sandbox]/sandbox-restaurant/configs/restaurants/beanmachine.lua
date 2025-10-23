@@ -15,10 +15,6 @@ table.insert(Config.Restaurants, {
             },
             data = {
                 business = "beanmachine",
-                inventory = {
-                    invType = 25,
-                    owner = "beanmachine-pickup-1",
-                },
             },
         },
         {
@@ -34,10 +30,6 @@ table.insert(Config.Restaurants, {
             },
             data = {
                 business = "beanmachine",
-                inventory = {
-                    invType = 25,
-                    owner = "beanmachine-pickup-2",
-                },
             },
         },
     },
