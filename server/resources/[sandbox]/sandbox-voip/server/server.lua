@@ -78,8 +78,9 @@ exports("AddPlayer", function(source)
 		if plyState then
 			local chan = firstFreeChannel()
 			if chan > 0 then
+				MumbleCreateChannel(chan)
+					
 				mappedChannels[chan] = source
-
 				plyState:set("voiceChannel", chan, true)
 			end
 		end
