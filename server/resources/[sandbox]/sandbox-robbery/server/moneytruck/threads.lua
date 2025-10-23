@@ -1,8 +1,4 @@
 CreateThread(function()
-    while Fetch == nil do
-        Wait(10)
-    end
-
     local spawned = false
     while true do
         spawned = false

@@ -77,9 +77,6 @@ end
 
 -- local _prevSaved = 0
 -- CreateThread(function()
--- 	while Fetch == nil or Database == nil do
--- 		Wait(1000)
--- 	end
 
 -- 	-- Wait(120000)
 

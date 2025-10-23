@@ -1,10 +1,6 @@
 local harvesting = false
 
 RegisterNetEvent("Weed:Client:Login", function(l)
-	while PedInteraction == nil do
-		Wait(10)
-	end
-
 	exports['sandbox-pedinteraction']:Add("weed-dealer", `s_m_y_dealer_01`, vector3(l.coords.x, l.coords.y, l.coords.z),
 		l.heading, 50.0, {
 			{

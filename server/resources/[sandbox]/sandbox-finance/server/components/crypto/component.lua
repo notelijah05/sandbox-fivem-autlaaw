@@ -1,10 +1,6 @@
 _cryptoCoins = {}
 
 exports("CryptoCoinCreate", function(name, acronym, price, buyable, sellable)
-	while Crypto == nil do
-		Wait(1)
-	end
-
 	if not exports['sandbox-finance']:CryptoCoinGet(acronym) then
 		table.insert(_cryptoCoins, {
 			Name = name,

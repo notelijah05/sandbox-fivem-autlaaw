@@ -1,8 +1,4 @@
 AddEventHandler("Crypto:Server:Startup", function()
-	while Crypto == nil do
-		Wait(10)
-	end
-
 	exports['sandbox-finance']:CryptoCoinCreate("Vroom", "VRM", 100, false, false)
 	exports['sandbox-finance']:CryptoCoinCreate("Mald", "MALD", 250, true, 190)
 
