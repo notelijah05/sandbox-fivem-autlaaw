@@ -258,9 +258,18 @@ end)
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source)
     server.playerDropped(source)
+
+    if GetNumPlayerIndices() == 0 then
+        Inventory.SaveInventories(false, true)
+    end
 end)
+
 AddEventHandler("Characters:Server:PlayerDropped", function(source)
     server.playerDropped(source)
+
+    if GetNumPlayerIndices() == 0 then
+        Inventory.SaveInventories(false, true)
+    end
 end)
 
 local function loadPlayerInv(src, newPlayer)
