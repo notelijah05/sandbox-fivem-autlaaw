@@ -157,11 +157,3 @@ end)
 exports('IsDevModeActive', function()
     return _devMode
 end)
-
-exports['sandbox-status']:Register("PLAYER_DEV", 0, "fas fa-terminal", "#000000", false, function(change)
-    -- We don't need to do anything here
-end, {
-    id = 7,
-    hideZero = true,
-    order = 8,
-})
