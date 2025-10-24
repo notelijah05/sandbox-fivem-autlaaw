@@ -1,4 +1,45 @@
 local _devMode = false
+local _createdTargets = {
+    vehicle = {},
+    ped = {},
+    object = {}
+}
+
+local function addTargets(targetType, targets)
+    if targetType == 'vehicle' then
+        exports.ox_target:addGlobalVehicle(targets)
+    elseif targetType == 'ped' then
+        exports.ox_target:addGlobalPed(targets)
+    elseif targetType == 'object' then
+        exports.ox_target:addGlobalObject(targets)
+    end
+
+    for _, target in ipairs(targets) do
+        if target.name then
+            table.insert(_createdTargets[targetType], target.name)
+        end
+    end
+end
+
+local function removeAllTargets()
+    for targetType, targetNames in pairs(_createdTargets) do
+        for _, targetName in ipairs(targetNames) do
+            if targetType == 'vehicle' then
+                exports.ox_target:removeGlobalVehicle(targetName)
+            elseif targetType == 'ped' then
+                exports.ox_target:removeGlobalPed(targetName)
+            elseif targetType == 'object' then
+                exports.ox_target:removeGlobalObject(targetName)
+            end
+        end
+    end
+
+    _createdTargets = {
+        vehicle = {},
+        ped = {},
+        object = {}
+    }
+end
 
 RegisterNetEvent("HUD:Client:DevMode", function()
     if LocalPlayer.state.isStaff or LocalPlayer.state.isAdmin then
@@ -7,8 +48,14 @@ RegisterNetEvent("HUD:Client:DevMode", function()
             "fas fa-cube")
 
         if _devMode then
+            exports['sandbox-status']:SetSingle("PLAYER_DEV", 1)
+        else
+            exports['sandbox-status']:SetSingle("PLAYER_DEV", 0)
+        end
+
+        if _devMode then
             -- Vehicle targets
-            exports.ox_target:addGlobalVehicle({
+            addTargets('vehicle', {
                 {
                     label = "Dev Actions",
                     name = "dev_actions",
@@ -55,7 +102,7 @@ RegisterNetEvent("HUD:Client:DevMode", function()
             })
 
             -- Ped targets
-            exports.ox_target:addGlobalPed({
+            addTargets('ped', {
                 {
                     name = 'dev_actions_ped',
                     icon = 'fas fa-cube',
@@ -78,7 +125,7 @@ RegisterNetEvent("HUD:Client:DevMode", function()
             })
 
             -- Object targets
-            exports.ox_target:addGlobalObject({
+            addTargets('object', {
                 {
                     name = 'dev_actions_object',
                     icon = 'fas fa-cube',
@@ -100,18 +147,7 @@ RegisterNetEvent("HUD:Client:DevMode", function()
                 }
             })
         else
-            -- Vehicle targets removal
-            exports.ox_target:removeGlobalVehicle('dev_actions')
-            exports.ox_target:removeGlobalVehicle('dev_delete_vehicle')
-            exports.ox_target:removeGlobalVehicle('debug_vehicle')
-
-            -- Ped targets removal
-            exports.ox_target:removeGlobalPed('dev_actions_ped')
-            exports.ox_target:removeGlobalPed('debug_ped')
-
-            -- Object targets removal
-            exports.ox_target:removeGlobalObject('dev_actions_object')
-            exports.ox_target:removeGlobalObject('debug_object')
+            removeAllTargets()
         end
     else
         exports['sandbox-hud']:Notification("error", "How are you doing this?")
@@ -121,3 +157,11 @@ end)
 exports('IsDevModeActive', function()
     return _devMode
 end)
+
+exports['sandbox-status']:Register("PLAYER_DEV", 0, "fas fa-terminal", "#000000", false, function(change)
+    -- We don't need to do anything here
+end, {
+    id = 7,
+    hideZero = true,
+    order = 8,
+})
