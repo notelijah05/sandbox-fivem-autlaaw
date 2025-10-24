@@ -16,21 +16,21 @@ local _breached = {}
 
 local policeDutyPoint = {
 	{
-		icon = "fa-solid fa-clipboard-check",
+		icon = "fas fa-clipboard-check",
 		label = "Go On Duty",
 		event = "Police:Client:OnDuty",
 		groups = { "police" },
 		reqOffDuty = true,
 	},
 	{
-		icon = "fa-solid fa-clipboard",
+		icon = "fas fa-clipboard",
 		label = "Go Off Duty",
 		event = "Police:Client:OffDuty",
 		groups = { "police" },
 		reqDuty = true,
 	},
 	{
-		icon = "fa-solid fa-location-dot",
+		icon = "fas fa-location-dot",
 		label = "Re-Enable Tracker",
 		event = "Police:Client:ReEnableTracker",
 		canInteract = function()
@@ -308,14 +308,15 @@ AddEventHandler('onClientResourceStart', function(resource)
 					label = "Start Pit Timer (5 Mins)",
 					action = function()
 						exports['sandbox-hud']:InteractionHide()
-						exports["sandbox-hud"]:Notification("success", "5 Minute Pit Timer", 60 * 1000 * 5, 'car-burst', {
-							alert = {
-								background = "#247BA5B3",
-							},
-							progress = {
-								background = "#ffffff",
-							},
-						})
+						exports["sandbox-hud"]:Notification("success", "5 Minute Pit Timer", 60 * 1000 * 5, 'car-burst',
+							{
+								alert = {
+									background = "#247BA5B3",
+								},
+								progress = {
+									background = "#ffffff",
+								},
+							})
 
 						Citizen.SetTimeout(60 * 1000 * 5, function()
 							exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")

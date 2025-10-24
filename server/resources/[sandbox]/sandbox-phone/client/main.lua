@@ -88,7 +88,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 		for k, v in ipairs(_payphones) do
 			exports.ox_target:addModel(v, {
 				{
-					icon = "fa-solid fa-phone-volume",
+					icon = "fas fa-phone-volume",
 					label = "Use Payphone",
 					event = "Phone:Client:Payphone",
 					distance = 2.0,
