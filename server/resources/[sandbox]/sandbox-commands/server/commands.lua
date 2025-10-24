@@ -116,7 +116,7 @@ function RegisterChatCommands()
 			},
 		},
 	}, 1)
-	--
+
 	exports["sandbox-chat"]:RegisterAdminCommand("debug", function(source, args, rawCommand)
 		TriggerClientEvent("HUD:Client:Debug", source)
 	end, {
