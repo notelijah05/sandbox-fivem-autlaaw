@@ -27,8 +27,7 @@ RegisterNetEvent("HUD:Client:DevMode", function()
                         return _devMode
                     end,
                     onSelect = function(data)
-                        local targetVehicle = NetworkGetEntityFromNetworkId(NetworkGetNetworkIdFromEntity(data.entity))
-                        TriggerServerEvent('dev:deleteVehicle', NetworkGetNetworkIdFromEntity(targetVehicle))
+                        TriggerServerEvent('dev:deleteVehicle', NetworkGetNetworkIdFromEntity(data.entity))
                     end
                 },
                 {
@@ -40,8 +39,7 @@ RegisterNetEvent("HUD:Client:DevMode", function()
                         return _devMode
                     end,
                     onSelect = function(data)
-                        local targetVehicle = NetworkGetEntityFromNetworkId(NetworkGetNetworkIdFromEntity(data.entity))
-                        TriggerServerEvent('dev:getKeys', NetworkGetNetworkIdFromEntity(targetVehicle))
+                        TriggerServerEvent('dev:getKeys', NetworkGetNetworkIdFromEntity(data.entity))
                     end
                 },
                 {
