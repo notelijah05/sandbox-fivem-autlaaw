@@ -32,6 +32,19 @@ RegisterNetEvent("HUD:Client:DevMode", function()
                     end
                 },
                 {
+                    label = "Get Keys",
+                    name = "dev_get_keys",
+                    icon = "fas fa-key",
+                    menuName = "dev_actions",
+                    canInteract = function()
+                        return _devMode
+                    end,
+                    onSelect = function(data)
+                        local targetVehicle = NetworkGetEntityFromNetworkId(NetworkGetNetworkIdFromEntity(data.entity))
+                        TriggerServerEvent('dev:getKeys', NetworkGetNetworkIdFromEntity(targetVehicle))
+                    end
+                },
+                {
                     label = 'Debug Vehicle',
                     name = 'debug_vehicle',
                     event = 'ox_target:debug',
