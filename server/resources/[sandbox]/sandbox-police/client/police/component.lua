@@ -546,7 +546,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 		end)
 
 		local _cuffCd = false
-		exports["sandbox-keybinds"]:Add("pd_cuff", "LBRACKET", "keyboard", "Police - Cuff", function()
+		exports["sandbox-kbs"]:Add("pd_cuff", "LBRACKET", "keyboard", "Police - Cuff", function()
 			if LocalPlayer.state.Character ~= nil and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison") then
 				if not _cuffCd then
 					TriggerServerEvent("Police:Server:Cuff")
@@ -558,7 +558,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 			end
 		end)
 
-		exports["sandbox-keybinds"]:Add("pd_uncuff", "RBRACKET", "keyboard", "Police - Uncuff", function()
+		exports["sandbox-kbs"]:Add("pd_uncuff", "RBRACKET", "keyboard", "Police - Uncuff", function()
 			if LocalPlayer.state.Character ~= nil and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison") then
 				if not _cuffCd then
 					TriggerServerEvent("Police:Server:Uncuff")
@@ -570,7 +570,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 			end
 		end)
 
-		-- exports["sandbox-keybinds"]:Add("pd_toggle_cuff", "", "keyboard", "Police - Cuff / Uncuff", function()
+		-- exports["sandbox-kbs"]:Add("pd_toggle_cuff", "", "keyboard", "Police - Cuff / Uncuff", function()
 		-- 	if LocalPlayer.state.Character ~= nil and LocalPlayer.state.onDuty == "police" then
 		-- 		if not _cuffCd then
 		-- 			TriggerServerEvent("Police:Server:ToggleCuff")
@@ -583,7 +583,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 		-- 	end
 		-- end)
 
-		exports["sandbox-keybinds"]:Add("tackle", "", "keyboard", "Tackle", function()
+		exports["sandbox-kbs"]:Add("tackle", "", "keyboard", "Tackle", function()
 			if LocalPlayer.state.Character ~= nil then
 				if
 					not LocalPlayer.state.isCuffed

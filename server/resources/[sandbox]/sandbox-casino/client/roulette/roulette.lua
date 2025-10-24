@@ -72,7 +72,7 @@ AddEventHandler("Casino:Client:Startup", function()
         })
     end
 
-    exports["sandbox-keybinds"]:Add("casino_camera", "C", "keyboard", "Casino - Change Roulette Camera", function()
+    exports["sandbox-kbs"]:Add("casino_camera", "C", "keyboard", "Casino - Change Roulette Camera", function()
         if _rouletteAtTable then
             RouletteChangeCameraMode(_rouletteAtTable)
         end
