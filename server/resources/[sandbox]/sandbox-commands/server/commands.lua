@@ -123,6 +123,12 @@ function RegisterChatCommands()
 		help = "Toggle debugger",
 	})
 
+	exports["sandbox-chat"]:RegisterAdminCommand("dev", function(source, args, rawCommand)
+		TriggerClientEvent("HUD:Client:DevMode", source)
+	end, {
+		help = "Toggle Dev Mode",
+	})
+
 	exports["sandbox-chat"]:RegisterAdminCommand("server", function(source, args, rawCommand)
 		exports["sandbox-chat"]:SendServerAll(rawCommand:sub(8))
 	end, {
