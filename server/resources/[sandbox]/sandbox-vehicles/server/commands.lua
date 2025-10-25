@@ -301,6 +301,7 @@ function RegisterChatCommands()
 	}, 1)
 
 	exports["sandbox-chat"]:RegisterCommand("seat", function(source, args, rawCommand)
+		if Player(source).state.isCuffed then return end
 		local seatNum = tonumber(args[1])
 		if seatNum and seatNum > 0 then
 			TriggerClientEvent("Vehicles:Client:Actions:SwitchSeat", source, seatNum - 2)
