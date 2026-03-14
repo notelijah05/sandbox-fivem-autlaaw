@@ -95,8 +95,8 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 					icon = "fas fa-cash-register",
 					label = "Lockpick Register",
 					item = "lockpick",
-					onSelect = function()
-						TriggerEvent("Robbery:Client:Store:LockpickRegister", id)
+					onSelect = function(data)
+						TriggerEvent("Robbery:Client:Store:LockpickRegister", data)
 					end,
 					canInteract = function(entity)
 						local coords = GetEntityCoords(entity)
