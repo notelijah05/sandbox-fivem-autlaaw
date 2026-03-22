@@ -252,7 +252,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
                             left:syncSlotsWithClients({
                                 {
                                     item = invSlot,
-                                    inventory = left.id
+                                    inventory = left:getClientId()
                                 }
                             }, true)
                         else
@@ -280,7 +280,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
                         left:syncSlotsWithClients({
                             {
                                 item = newItem,
-                                inventory = left.id
+                                inventory = left:getClientId()
                             }
                         }, true)
                     end

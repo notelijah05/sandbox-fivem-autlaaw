@@ -1,11 +1,31 @@
+local ItemList = {}
+local isServer = IsDuplicityVersion()
+
 local function useExport(resource, export)
     return function(...)
+        if isServer then
+            local args = { ... }
+            local inventory = args[3]
+
+            if inventory and type(inventory) == 'table' and inventory.player and inventory.id
+                and shared.framework == 'sandbox' then
+                local char = exports['sandbox-characters']:FetchBySID(tonumber(inventory.id))
+                if char then
+                    local playerSource = char:GetData('Source')
+                    if playerSource then
+                        local modifiedInventory = {}
+                        for k, v in pairs(inventory) do
+                            modifiedInventory[k] = v
+                        end
+                        modifiedInventory.id = playerSource
+                        return exports[resource][export](nil, args[1], args[2], modifiedInventory, args[4])
+                    end
+                end
+            end
+        end
         return exports[resource][export](nil, ...)
     end
 end
-
-local ItemList = {}
-local isServer = IsDuplicityVersion()
 
 local function setImagePath(path)
     if path then

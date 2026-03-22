@@ -293,6 +293,14 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source)
 end)
 
 local function loadPlayerInv(src, newPlayer)
+    local earlyChar = exports['sandbox-characters']:FetchCharacterSource(src)
+    if earlyChar then
+        local earlyId = earlyChar:GetData('SID')
+        if earlyId and Inventory.ClearStaleIdentifier then
+            Inventory.ClearStaleIdentifier(earlyId, src)
+        end
+    end
+
     local char = exports['sandbox-characters']:FetchCharacterSource(src)
     local id = char:GetData('SID')
     local cash = char:GetData('Cash')
@@ -314,12 +322,13 @@ end
 ---@diagnostic disable-next-line: duplicate-set-field
 server.syncInventory = function(inv)
     local accounts = Inventory.GetAccountItemCounts(inv)
-    local char = exports['sandbox-characters']:FetchCharacterSource(inv.id)
+    if not accounts then return end
 
-    if accounts then
-        if accounts.money and accounts.money ~= char:GetData('Cash') then
-            char:SetData('Cash', accounts.money)
-        end
+    local char = exports['sandbox-characters']:FetchBySID(inv.owner)
+    if not char then return end
+
+    if accounts.money and accounts.money ~= char:GetData('Cash') then
+        char:SetData('Cash', accounts.money)
     end
 end
 

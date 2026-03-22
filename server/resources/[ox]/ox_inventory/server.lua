@@ -68,10 +68,11 @@ function server.setPlayerInventory(player, data)
     end
 
     player.source = tonumber(player.source)
-    local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight,
-        shared.playerweight, player.identifier, inventory)
+    local inv = Inventory.Create(player.identifier, player.name, 'player', shared.playerslots, totalWeight,
+        shared.playerweight, player.identifier, inventory, nil, nil, player.source)
 
     if inv then
+        Inventory.SetSource(inv, player.source)
         inv.player = server.setPlayerData(player)
         inv.player.ped = GetPlayerPed(player.source)
 
@@ -351,14 +352,14 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
     end
 
     return {
-        id = left.id,
+        id = left:getClientId(),
         label = left.label,
         type = left.type,
         slots = left.slots,
         weight = left.weight,
         maxWeight = left.maxWeight
     }, right and {
-        id = right.id,
+        id = right:getClientId(),
         label = right.player and '' or right.label,
         type = right.player and 'otherplayer' or right.type,
         slots = right.slots,

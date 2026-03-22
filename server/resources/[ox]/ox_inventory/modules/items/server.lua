@@ -363,7 +363,7 @@ function Items.UpdateDurability(inv, slot, item, value, ostime)
     inv:syncSlotsWithClients({
         {
             item = slot,
-            inventory = inv.id
+            inventory = inv:getClientId()
         }
     }, true)
 end

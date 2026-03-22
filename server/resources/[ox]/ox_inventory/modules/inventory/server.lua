@@ -5,9 +5,27 @@ local Inventory = {}
 ---@type table<any, OxInventory>
 local Inventories = {}
 
+local SourceToInventory = {}
+
 ---@class OxInventory
 local OxInventory = {}
 OxInventory.__index = OxInventory
+
+---@return number?
+function OxInventory:getSource()
+    if self.player then
+        return self.source
+    end
+    return self.source or (type(self.id) == 'number' and self.id) or nil
+end
+
+---@return number|string
+function OxInventory:getClientId()
+    if self.player and self.source then
+        return self.source
+    end
+    return self.id
+end
 
 ---Open a player's inventory, optionally with a secondary inventory.
 ---@param inv? inventory
@@ -18,8 +36,11 @@ function OxInventory:openInventory(inv)
 
     if not inv then return end
 
+    local playerSource = self.source
+    if not playerSource then return end
+
     inv:set('open', true)
-    inv.openedBy[self.id] = true
+    inv.openedBy[playerSource] = true
     self.open = inv.id
 
     TriggerEvent('ox_inventory:openedInventory', self.id, inv.id)
@@ -30,18 +51,22 @@ end
 function OxInventory:closeInventory(noEvent)
     if not self.player or not self.open then return end
 
-    local inv = Inventory(self.open)
+    local inv = Inventories[self.open]
 
     if not inv then return end
 
-    inv.openedBy[self.id] = nil
+    local playerSource = self.source
+    if playerSource then
+        inv.openedBy[playerSource] = nil
+    end
+
     inv:set('open', false)
     self.open = false
     self.currentShop = nil
     self.containerSlot = nil
 
     if not noEvent then
-        TriggerClientEvent('ox_inventory:closeInventory', self.id, true)
+        TriggerClientEvent('ox_inventory:closeInventory', self:getSource(), true)
     end
 
     TriggerEvent('ox_inventory:closedInventory', self.id, inv.id)
@@ -53,25 +78,43 @@ end
 ---@param slots updateSlot[]
 ---@param weight { left?: number, right?: number } | number
 function OxInventory:syncSlotsWithPlayer(slots, weight)
-    TriggerClientEvent('ox_inventory:updateSlots', self.id, slots, weight)
+    local source = self:getSource()
+    if source then
+        TriggerClientEvent('ox_inventory:updateSlots', source, slots, weight)
+    end
 end
 
 ---Sync an inventory's state with all player's accessing it.
 ---@param slots updateSlot[]
 ---@param syncOwner? boolean
 function OxInventory:syncSlotsWithClients(slots, syncOwner)
-    for playerId in pairs(self.openedBy) do
-        if self.id ~= playerId then
-            local target = Inventories[playerId]
+    local sentTo = {}
 
+    for playerSource in pairs(self.openedBy) do
+        if not sentTo[playerSource] then
+            local target = SourceToInventory[playerSource]
             if target then
-                TriggerClientEvent('ox_inventory:updateSlots', playerId, slots, target.weight)
+                TriggerClientEvent('ox_inventory:updateSlots', playerSource, slots, target.weight)
+                sentTo[playerSource] = true
             end
         end
     end
 
-    if syncOwner and self.player then
-        TriggerClientEvent('ox_inventory:updateSlots', self.id, slots, self.weight)
+    if syncOwner then
+        if self.player then
+            local selfSource = self.source
+            if selfSource and not sentTo[selfSource] then
+                TriggerClientEvent('ox_inventory:updateSlots', selfSource, slots, self.weight)
+                sentTo[selfSource] = true
+            end
+        elseif type(self.id) == 'string' and self.id:sub(1, 9) == 'crafting:' then
+            for playerSource in pairs(self.openedBy) do
+                if not sentTo[playerSource] then
+                    TriggerClientEvent('ox_inventory:updateSlots', playerSource, slots, 0)
+                    sentTo[playerSource] = true
+                end
+            end
+        end
     end
 end
 
@@ -223,7 +266,48 @@ setmetatable(Inventory, {
             return not inv.owner and Inventories[inv.id] or loadInventoryData(inv, player, ignoreSecurityChecks)
         end
 
-        return Inventories[inv] or loadInventoryData({ id = inv }, player, ignoreSecurityChecks)
+        if type(inv) == 'number' then
+            local inventory = SourceToInventory[inv]
+            if inventory then
+                return inventory
+            end
+
+            local resolvedSid = nil
+            if shared.framework == 'sandbox' then
+                local char = exports['sandbox-characters']:FetchCharacterSource(inv)
+                if char then
+                    local sid = char:GetData('SID')
+                    if sid then
+                        resolvedSid = sid
+                        inventory = Inventories[sid]
+                        if inventory then
+                            return inventory
+                        end
+                    end
+                end
+            end
+
+            local lookupId = resolvedSid or inv
+            inventory = Inventories[lookupId]
+            if inventory then
+                if inventory.type ~= 'player' or inventory.source == inv then
+                    return inventory
+                end
+            end
+
+            if resolvedSid then
+                local result = loadInventoryData({ id = resolvedSid }, player, ignoreSecurityChecks)
+                if result then
+                    return result
+                end
+            end
+        end
+
+        local result = Inventories[inv]
+        if result and result.type == 'player' and type(inv) == 'number' and result.source ~= inv then
+            return nil
+        end
+        return result or loadInventoryData({ id = inv }, player, ignoreSecurityChecks)
     end
 })
 
@@ -279,8 +363,8 @@ exports('GetContainerFromSlot', Inventory.GetContainerFromSlot)
 function Inventory.CloseAll(inv, ignoreId)
     if not inv then
         for _, data in pairs(Inventories) do
-            for playerId in pairs(data.openedBy) do
-                local playerInv = Inventory(playerId)
+            for playerSource in pairs(data.openedBy) do
+                local playerInv = SourceToInventory[playerSource]
 
                 if playerInv then playerInv:closeInventory(true) end
             end
@@ -293,10 +377,10 @@ function Inventory.CloseAll(inv, ignoreId)
 
     if not inv then return end
 
-    for playerId in pairs(inv.openedBy) do
-        local playerInv = Inventory(playerId)
+    for playerSource in pairs(inv.openedBy) do
+        local playerInv = SourceToInventory[playerSource]
 
-        if playerInv and playerId ~= ignoreId then
+        if playerInv and playerSource ~= ignoreId then
             playerInv:closeInventory()
         end
     end
@@ -384,7 +468,10 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
     local newWeight = currentSlot and inv.weight - currentSlot.weight or inv.weight
 
     if currentSlot and newCount < 1 then
-        TriggerClientEvent('ox_inventory:itemNotify', inv.id, { currentSlot, 'ui_removed', currentSlot.count })
+        local src = inv:getSource()
+        if src then
+            TriggerClientEvent('ox_inventory:itemNotify', src, { currentSlot, 'ui_removed', currentSlot.count })
+        end
         currentSlot = nil
     else
         currentSlot = {
@@ -404,8 +491,11 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
         currentSlot.weight = slotWeight
         newWeight += slotWeight
 
-        TriggerClientEvent('ox_inventory:itemNotify', inv.id,
-            { currentSlot, count < 0 and 'ui_removed' or 'ui_added', math.abs(count) })
+        local src = inv:getSource()
+        if src then
+            TriggerClientEvent('ox_inventory:itemNotify', src,
+                { currentSlot, count < 0 and 'ui_removed' or 'ui_added', math.abs(count) })
+        end
     end
 
     inv.weight = newWeight
@@ -505,11 +595,11 @@ end
 -- This should be handled by frameworks, but sometimes isn't or is exploitable in some way.
 local activeIdentifiers = {}
 
-local function hasActiveInventory(playerId, owner)
+local function hasActiveInventory(playerSource, owner)
     local activePlayer = activeIdentifiers[owner]
 
     if activePlayer then
-        if activePlayer == playerId then
+        if activePlayer == playerSource then
             error('attempted to load active player\'s inventory a secondary time', 0)
         end
 
@@ -519,12 +609,12 @@ local function hasActiveInventory(playerId, owner)
             local endpoint = GetPlayerEndpoint(activePlayer)
 
             if endpoint then
-                DropPlayer(playerId, ("Character identifier '%s' is already active."):format(owner))
+                DropPlayer(playerSource, ("Character identifier '%s' is already active."):format(owner))
 
                 -- Supposedly still getting stuck? Print info and hope somebody reports back (lol)
-                print(('kicked player.%s (charid is already in use)'):format(playerId), json.encode({
+                print(('kicked player.%s (charid is already in use)'):format(playerSource), json.encode({
                     oldId = activePlayer,
-                    newId = playerId,
+                    newId = playerSource,
                     charid = owner,
                     endpoint = endpoint,
                     playerName = GetPlayerName(activePlayer),
@@ -546,8 +636,37 @@ local function hasActiveInventory(playerId, owner)
         end
     end
 
-    activeIdentifiers[owner] = playerId
+    activeIdentifiers[owner] = playerSource
 end
+
+function Inventory.ClearStaleIdentifier(owner, newPlayerId)
+    local activePlayer = activeIdentifiers[owner]
+    if not activePlayer then return false end
+
+    if newPlayerId and activePlayer == newPlayerId then return false end
+
+    local inventory = Inventory(activePlayer)
+    if not inventory then
+        activeIdentifiers[owner] = nil
+        return true
+    end
+
+    local endpoint = GetPlayerEndpoint(activePlayer)
+
+    if endpoint then
+        return false
+    end
+
+    print(('[ox_inventory] Force clearing stale identifier for owner %s (stale source: %s)'):format(owner, activePlayer))
+
+    Inventory.CloseAll(inventory)
+    db.savePlayer(inventory.owner, json.encode(inventory:minimal()))
+    Inventory.Remove(inventory)
+
+    return true
+end
+
+exports('ClearStaleIdentifier', Inventory.ClearStaleIdentifier)
 
 ---Manually clear an inventory state tied to the given identifier.
 ---Temporary workaround until somebody actually gives me info.
@@ -555,10 +674,19 @@ RegisterCommand('clearActiveIdentifier', function(source, args)
     ---Server console only.
     if source ~= 0 then return end
 
-    local activePlayer = activeIdentifiers[args[1]] or activeIdentifiers[tonumber(args[1])]
+    local identifier = args[1]
+    if tonumber(identifier) then identifier = tonumber(identifier) end
+
+    local activePlayer = activeIdentifiers[identifier]
     local inventory = activePlayer and Inventory(activePlayer)
 
-    if not inventory then return end
+    if not inventory then
+        if activePlayer then
+            activeIdentifiers[identifier] = nil
+            print(('cleared stale activeIdentifiers[%s] (no inventory found)'):format(identifier))
+        end
+        return
+    end
 
     local endpoint = GetPlayerEndpoint(activePlayer)
 
@@ -594,11 +722,17 @@ end, true)
 ---@param owner string | number | boolean
 ---@param items? table
 ---@param dbId? string | number
+---@param playerSource? number
 ---@return OxInventory?
 --- This should only be utilised internally!
 --- To create a stash, please use `exports.ox_inventory:RegisterStash` instead.
-function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, items, groups, dbId)
-    if invType == 'player' and hasActiveInventory(id, owner) then return end
+function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, items, groups, dbId, playerSource)
+    if invType == 'player' then
+        if type(playerSource) ~= 'number' then
+            error('ox_inventory: player inventory requires playerSource', 0)
+        end
+        if hasActiveInventory(playerSource, owner) then return end
+    end
 
     local self = {
         id = id,
@@ -654,15 +788,17 @@ function Inventory.Remove(inv)
         Inventory.Drops[inv.id] = nil
     elseif inv.player then
         activeIdentifiers[inv.owner] = nil
+
+        if inv.source then
+            SourceToInventory[inv.source] = nil
+        end
     end
 
-    for playerId in pairs(inv.openedBy) do
-        if inv.id ~= playerId then
-            local target = Inventories[playerId]
+    for playerSource in pairs(inv.openedBy) do
+        local target = SourceToInventory[playerSource]
 
-            if target then
-                target:closeInventory()
-            end
+        if target then
+            target:closeInventory()
         end
     end
 
@@ -674,6 +810,15 @@ function Inventory.Remove(inv)
 end
 
 exports('RemoveInventory', Inventory.Remove)
+
+function Inventory.SetSource(inv, source)
+    if inv and source then
+        inv.source = source
+        SourceToInventory[source] = inv
+    end
+end
+
+exports('SetInventorySource', Inventory.SetSource)
 
 ---Update the internal reference to vehicle stashes. Does not trigger a save or update the database.
 ---@param oldPlate string
@@ -1092,7 +1237,7 @@ function Inventory.SetMetadata(inv, slotId, metadata)
         inv:syncSlotsWithClients({
             {
                 item = slot,
-                inventory = inv.id
+                inventory = inv:getClientId()
             }
         }, true)
     end
@@ -1131,13 +1276,13 @@ function Inventory.SetSlotCount(inv, slots)
     inv.slots = slots
 
     if inv.player then
-        TriggerClientEvent('ox_inventory:refreshSlotCount', inv.id, { inventoryId = inv.id, slots = inv.slots })
+        TriggerClientEvent('ox_inventory:refreshSlotCount', inv:getSource(),
+            { inventoryId = inv:getClientId(), slots = inv.slots })
     end
 
-    for playerId in pairs(inv.openedBy) do
-        if playerId ~= inv.id then
-            TriggerClientEvent('ox_inventory:refreshSlotCount', playerId, { inventoryId = inv.id, slots = inv.slots })
-        end
+    for playerSource in pairs(inv.openedBy) do
+        TriggerClientEvent('ox_inventory:refreshSlotCount', playerSource,
+            { inventoryId = inv:getClientId(), slots = inv.slots })
     end
 end
 
@@ -1154,14 +1299,13 @@ function Inventory.SetMaxWeight(inv, maxWeight)
     inv.maxWeight = maxWeight
 
     if inv.player then
-        TriggerClientEvent('ox_inventory:refreshMaxWeight', inv.id, { inventoryId = inv.id, maxWeight = inv.maxWeight })
+        TriggerClientEvent('ox_inventory:refreshMaxWeight', inv:getSource(),
+            { inventoryId = inv:getClientId(), maxWeight = inv.maxWeight })
     end
 
-    for playerId in pairs(inv.openedBy) do
-        if playerId ~= inv.id then
-            TriggerClientEvent('ox_inventory:refreshMaxWeight', playerId,
-                { inventoryId = inv.id, maxWeight = inv.maxWeight })
-        end
+    for playerSource in pairs(inv.openedBy) do
+        TriggerClientEvent('ox_inventory:refreshMaxWeight', playerSource,
+            { inventoryId = inv:getClientId(), maxWeight = inv.maxWeight })
     end
 end
 
@@ -1230,7 +1374,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
         end
         
         local slotData = inv.items[slot]
-        slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
+        slotMetadata, slotCount = Items.Metadata(inv, item, metadata and table.clone(metadata) or {}, count)
 
         if not slotData or (item.stack and slotData.name == item.name and matchesExcludingDurability(slotData.metadata, slotMetadata)) then
             toSlot = slot
@@ -1239,7 +1383,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
     if not toSlot then
         local items = inv.items
-        slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
+        slotMetadata, slotCount = Items.Metadata(inv, item, metadata and table.clone(metadata) or {}, count)
 
         local startSlot = (inv.type == 'player') and 10 or 1
         for i = startSlot, inv.slots do
@@ -1258,7 +1402,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
                 end
 
                 count -= 1
-                slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
+                slotMetadata, slotCount = Items.Metadata(inv, item, metadata and table.clone(metadata) or {}, count)
             elseif not toSlot and not slotData then
                 toSlot = i
             end
@@ -1285,7 +1429,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
                     end
 
                     count -= 1
-                    slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {},
+                    slotMetadata, slotCount = Items.Metadata(inv, item, metadata and table.clone(metadata) or {},
                         count)
                 elseif not toSlot and not slotData then
                     toSlot = i
@@ -1313,7 +1457,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
         inv:syncSlotsWithClients({
             {
                 item = inv.items[toSlot],
-                inventory = inv.id
+                inventory = inv:getClientId()
             }
         }, true)
 
@@ -1331,7 +1475,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
             local data = toSlot[i]
             added += data.count
             Inventory.SetSlot(inv, item, data.count, data.metadata, data.slot)
-            toSlot[i] = { item = inv.items[data.slot], inventory = inv.id }
+            toSlot[i] = { item = inv.items[data.slot], inventory = inv:getClientId() }
         end
 
         if inv.player and server.syncInventory then
@@ -1491,7 +1635,10 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal, str
         for k, v in pairs(itemSlots) do
             if removed < total then
                 if v == count then
-                    TriggerClientEvent('ox_inventory:itemNotify', inv.id, { inv.items[k], 'ui_removed', v })
+                    local src = inv:getSource()
+                    if src then
+                        TriggerClientEvent('ox_inventory:itemNotify', src, { inv.items[k], 'ui_removed', v })
+                    end
 
                     removed = total
                     inv.weight -= inv.items[k].weight
@@ -1503,7 +1650,10 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal, str
                     removed = total
                     count = v - count
                 else
-                    TriggerClientEvent('ox_inventory:itemNotify', inv.id, { inv.items[k], 'ui_removed', v })
+                    local src = inv:getSource()
+                    if src then
+                        TriggerClientEvent('ox_inventory:itemNotify', src, { inv.items[k], 'ui_removed', v })
+                    end
 
                     removed = removed + v
                     count = count - v
@@ -1527,7 +1677,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal, str
         local array = table.create(#slots, 0)
 
         for k, v in pairs(slots) do
-            array[k] = { item = type(v) == 'number' and { slot = v } or v, inventory = inv.id }
+            array[k] = { item = type(v) == 'number' and { slot = v } or v, inventory = inv:getClientId() }
         end
 
         inv:syncSlotsWithClients(array, true)
@@ -1787,7 +1937,7 @@ local function dropItem(source, playerInventory, fromData, data)
         items = {
             {
                 item = fromData or { slot = data.fromSlot },
-                inventory = playerInventory.id
+                inventory = playerInventory:getClientId()
             }
         }
     }
@@ -1821,11 +1971,11 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
         return false, {
             {
                 item = toInventory.items[data.toSlot] or { slot = data.toSlot },
-                inventory = toInventory.id
+                inventory = toInventory:getClientId()
             },
             {
                 item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
-                inventory = fromInventory.id
+                inventory = fromInventory:getClientId()
             }
         }
     end
@@ -1858,11 +2008,11 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
             return false, {
                 {
                     item = { slot = data.fromSlot },
-                    inventory = fromInventory.id
+                    inventory = fromInventory:getClientId()
                 },
                 {
                     item = toData or { slot = data.toSlot },
-                    inventory = toInventory.id
+                    inventory = toInventory:getClientId()
                 }
             }
         end
@@ -1921,15 +2071,21 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
                         end
 
                         if fromOtherPlayer then
-                            TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id,
-                                { fromData, 'ui_removed', fromData.count })
-                            TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id,
-                                { toData, 'ui_added', toData.count })
+                            local fs = fromInventory:getSource()
+                            if fs then
+                                TriggerClientEvent('ox_inventory:itemNotify', fs,
+                                    { fromData, 'ui_removed', fromData.count })
+                                TriggerClientEvent('ox_inventory:itemNotify', fs,
+                                    { toData, 'ui_added', toData.count })
+                            end
                         elseif toOtherPlayer then
-                            TriggerClientEvent('ox_inventory:itemNotify', toInventory.id,
-                                { fromData, 'ui_added', fromData.count })
-                            TriggerClientEvent('ox_inventory:itemNotify', toInventory.id,
-                                { toData, 'ui_removed', toData.count })
+                            local ts = toInventory:getSource()
+                            if ts then
+                                TriggerClientEvent('ox_inventory:itemNotify', ts,
+                                    { fromData, 'ui_added', fromData.count })
+                                TriggerClientEvent('ox_inventory:itemNotify', ts,
+                                    { toData, 'ui_removed', toData.count })
+                            end
                         end
 
                         fromInventory.weight = fromWeight
@@ -1980,11 +2136,17 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
                         end
 
                         if fromOtherPlayer then
-                            TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id,
-                                { fromData, 'ui_removed', data.count })
+                            local fs = fromInventory:getSource()
+                            if fs then
+                                TriggerClientEvent('ox_inventory:itemNotify', fs,
+                                    { fromData, 'ui_removed', data.count })
+                            end
                         elseif toOtherPlayer then
-                            TriggerClientEvent('ox_inventory:itemNotify', toInventory.id,
-                                { toData, 'ui_added', data.count })
+                            local ts = toInventory:getSource()
+                            if ts then
+                                TriggerClientEvent('ox_inventory:itemNotify', ts,
+                                    { toData, 'ui_added', data.count })
+                            end
                         end
 
                         if server.loglevel > 0 then
@@ -2036,11 +2198,17 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
                         end
 
                         if fromOtherPlayer then
-                            TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id,
-                                { fromData, 'ui_removed', data.count })
+                            local fs = fromInventory:getSource()
+                            if fs then
+                                TriggerClientEvent('ox_inventory:itemNotify', fs,
+                                    { fromData, 'ui_removed', data.count })
+                            end
                         elseif toOtherPlayer then
-                            TriggerClientEvent('ox_inventory:itemNotify', toInventory.id,
-                                { fromData, 'ui_added', data.count })
+                            local ts = toInventory:getSource()
+                            if ts then
+                                TriggerClientEvent('ox_inventory:itemNotify', ts,
+                                    { fromData, 'ui_added', data.count })
+                            end
                         end
 
                         if server.loglevel > 0 then
@@ -2071,7 +2239,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
                 if toInventory.type == 'container' and containerItem then
                     items[#items + 1] = {
                         item = containerItem,
-                        inventory = playerInventory.id
+                        inventory = playerInventory:getClientId()
                     }
                 end
             end
@@ -2080,7 +2248,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
                 if fromInventory.type == 'container' and containerItem then
                     items[#items + 1] = {
                         item = containerItem,
-                        inventory = playerInventory.id
+                        inventory = playerInventory:getClientId()
                     }
                 end
             end
@@ -2096,25 +2264,25 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
                     fromInventory:syncSlotsWithClients({
                         {
                             item = fromInventory.items[data.toSlot] or { slot = data.toSlot },
-                            inventory = fromInventory.id
+                            inventory = fromInventory:getClientId()
                         },
                         {
                             item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
-                            inventory = fromInventory.id
+                            inventory = fromInventory:getClientId()
                         }
                     }, true)
                 else
                     toInventory:syncSlotsWithClients({
                         {
                             item = toInventory.items[data.toSlot] or { slot = data.toSlot },
-                            inventory = toInventory.id
+                            inventory = toInventory:getClientId()
                         }
                     }, true)
 
                     fromInventory:syncSlotsWithClients({
                         {
                             item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
-                            inventory = fromInventory.id
+                            inventory = fromInventory:getClientId()
                         }
                     }, true)
                 end
@@ -2141,7 +2309,8 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
             if toInventory.weapon == data.toSlot then
                 if not sameInventory then
                     toInventory.weapon = nil
-                    TriggerClientEvent('ox_inventory:disarm', toInventory.id)
+                    local ts = toInventory:getSource()
+                    if ts then TriggerClientEvent('ox_inventory:disarm', ts) end
                 else
                     weaponSlot = data.fromSlot
                     toInventory.weapon = weaponSlot
@@ -2151,7 +2320,8 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
             if fromInventory.weapon == data.fromSlot then
                 if not sameInventory then
                     fromInventory.weapon = nil
-                    TriggerClientEvent('ox_inventory:disarm', fromInventory.id)
+                    local fs = fromInventory:getSource()
+                    if fs then TriggerClientEvent('ox_inventory:disarm', fs) end
                 elseif not weaponSlot then
                     weaponSlot = data.toSlot
                     fromInventory.weapon = weaponSlot
@@ -2172,7 +2342,8 @@ function Inventory.Confiscate(source)
         inv.weight = 0
         inv.changed = true
 
-        TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
+        local src = inv:getSource()
+        if src then TriggerClientEvent('ox_inventory:inventoryConfiscated', src) end
 
         if server.syncInventory then server.syncInventory(inv) end
     end
@@ -2255,7 +2426,7 @@ function Inventory.Clear(inv, keep)
                     newWeight += v.weight
                 elseif updateSlots then
                     inc += 1
-                    updateSlots[inc] = { item = { slot = slot }, inventory = inv.id }
+                    updateSlots[inc] = { item = { slot = slot }, inventory = inv:getClientId() }
                 end
             end
         elseif keepType == 'table' and table.type(keep) == 'array' then
@@ -2270,7 +2441,7 @@ function Inventory.Clear(inv, keep)
 
                 if updateSlots then
                     inc += 1
-                    updateSlots[inc] = { item = { slot = slot }, inventory = inv.id }
+                    updateSlots[inc] = { item = { slot = slot }, inventory = inv:getClientId() }
                 end
 
                 ::foundItem::
@@ -2283,7 +2454,7 @@ function Inventory.Clear(inv, keep)
         if updateSlots then
             for slot in pairs(inv.items) do
                 inc += 1
-                updateSlots[inc] = { item = { slot = slot }, inventory = inv.id }
+                updateSlots[inc] = { item = { slot = slot }, inventory = inv:getClientId() }
             end
         end
 
@@ -2609,7 +2780,7 @@ AddEventHandler('onResourceStop', function(resource)
 end)
 
 RegisterServerEvent('ox_inventory:closeInventory', function()
-    local inventory = Inventories[source]
+    local inventory = Inventory(source)
 
     if inventory?.open then
         local secondary = Inventories[inventory.open]

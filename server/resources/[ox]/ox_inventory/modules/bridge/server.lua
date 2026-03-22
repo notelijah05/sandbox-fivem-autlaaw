@@ -63,6 +63,14 @@ function server.playerDropped(source)
         inv:closeInventory()
         Wait(100)
         Inventory.Remove(inv)
+    elseif shared.framework == 'sandbox' then
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
+        if char then
+            local sid = char:GetData('SID')
+            if sid and Inventory.ClearStaleIdentifier then
+                Inventory.ClearStaleIdentifier(sid)
+            end
+        end
     end
 end
 
